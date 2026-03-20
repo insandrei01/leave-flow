@@ -2,7 +2,7 @@
 
 This repo is the output of a single experiment: can a structured multi-agent Claude Code setup generate a production-grade application from one prompt?
 
-**Yes.** ~12 hours, ~$117 in API costs, one human decision (picking a design variant).
+**Yes.** one human decision (picking a design variant).
 
 The result is **LeaveFlow** — a multi-tenant leave management SaaS with a Fastify API, Next.js frontend, Slack/Teams bots, Stripe billing, and 630+ passing tests. ~460 source files across a pnpm monorepo.
 
@@ -12,9 +12,9 @@ The prompt was fed into **Scriptgun**, an npm package that bootstraps Claude Cod
 
 Three pipelines ran in sequence:
 
-1. **Discovery** (~100 min, ~$6) — Product vision, user stories, requirements
-2. **Design** (~5.5 hrs, ~$29) — Architecture, three UI/UX variants, API contracts, data model
-3. **Development** (~4.5 hrs, ~$82) — Implementation in parallel streams, code/security/perf review, bug fixes, tests, docs
+1. **Discovery** — Product vision, user stories, requirements
+2. **Design** — Architecture, three UI/UX variants, API contracts, data model
+3. **Development** — Implementation in parallel streams, code/security/perf review, bug fixes, tests, docs
 
 The review stage found 16 critical issues (plaintext OAuth tokens, missing CSRF, broken authorization). Four developer agents fixed all of them in parallel. QA caught 4 more bugs in the test suite. All resolved automatically.
 
