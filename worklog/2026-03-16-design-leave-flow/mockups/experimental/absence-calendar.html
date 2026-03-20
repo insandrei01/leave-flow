@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeaveFlow — Absence Calendar (Experimental)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            surface: { DEFAULT: '#0A0E1A', raised: '#111827', overlay: '#1F2937' },
+            accent: {
+              indigo: '#818CF8', violet: '#A78BFA', emerald: '#34D399',
+              amber: '#FBBF24', rose: '#FB7185', cyan: '#22D3EE',
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .gradient-mesh {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(129, 140, 248, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(167, 139, 250, 0.08) 0%, transparent 50%);
+    }
+    .swim-lane-row:hover { background: rgba(255,255,255,0.02); }
+    .absence-bar {
+      transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .absence-bar:hover {
+      transform: scaleY(1.2);
+      filter: brightness(1.3);
+      z-index: 20;
+    }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+    .today-column {
+      background: rgba(129, 140, 248, 0.04);
+      border-left: 1px solid rgba(129, 140, 248, 0.15);
+      border-right: 1px solid rgba(129, 140, 248, 0.15);
+    }
+  </style>
+</head>
+<body class="bg-surface text-white font-body min-h-screen gradient-mesh">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar omitted for brevity (same as dashboard) -->
+
+    <main class="flex-1 p-8 overflow-hidden flex flex-col">
+
+      <!-- Header -->
+      <header class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="font-display text-2xl font-bold tracking-tight">Absence Calendar</h1>
+          <p class="text-gray-400 text-sm mt-1">Swim-lane view &middot; Team-by-team absence visualization</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- View toggles -->
+          <div class="glass-card rounded-xl flex overflow-hidden" role="tablist" aria-label="Calendar view mode">
+            <button class="px-3 py-2 text-xs font-medium bg-white/8 text-white cursor-pointer" role="tab" aria-selected="true">Month</button>
+            <button class="px-3 py-2 text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors duration-200" role="tab" aria-selected="false">Week</button>
+            <button class="px-3 py-2 text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 cursor-pointer transition-colors duration-200" role="tab" aria-selected="false">Heatmap</button>
+          </div>
+          <!-- Month nav -->
+          <div class="flex items-center gap-2">
+            <button class="glass-card rounded-lg p-2 cursor-pointer hover:bg-white/8 transition-colors duration-200" aria-label="Previous month">
+              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+            </button>
+            <span class="font-display font-semibold text-lg px-2">March 2026</span>
+            <button class="glass-card rounded-lg p-2 cursor-pointer hover:bg-white/8 transition-colors duration-200" aria-label="Next month">
+              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+            </button>
+          </div>
+          <!-- Filters -->
+          <button class="glass-card rounded-xl px-4 py-2 text-xs font-medium text-gray-400 hover:text-white cursor-pointer flex items-center gap-2 transition-colors duration-200">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" /></svg>
+            Filter
+          </button>
+        </div>
+      </header>
+
+      <!-- Swim Lane Calendar -->
+      <div class="glass-card rounded-2xl flex-1 overflow-hidden flex flex-col">
+        <!-- Day header row -->
+        <div class="flex border-b border-white/5">
+          <div class="w-48 flex-shrink-0 p-3 text-xs font-mono text-gray-500 border-r border-white/5">Team / Person</div>
+          <div class="flex-1 flex overflow-x-auto scrollbar-none">
+            <!-- 31 day columns for March -->
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Sun</div>
+              <div class="text-xs font-mono text-gray-400">1</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Mon</div>
+              <div class="text-xs font-mono text-gray-400">2</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Tue</div>
+              <div class="text-xs font-mono text-gray-400">3</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Wed</div>
+              <div class="text-xs font-mono text-gray-400">4</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Thu</div>
+              <div class="text-xs font-mono text-gray-400">5</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Fri</div>
+              <div class="text-xs font-mono text-gray-400">6</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3 bg-white/2">
+              <div class="text-[9px] font-mono text-gray-600">Sat</div>
+              <div class="text-xs font-mono text-gray-600">7</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3 bg-white/2">
+              <div class="text-[9px] font-mono text-gray-600">Sun</div>
+              <div class="text-xs font-mono text-gray-600">8</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Mon</div>
+              <div class="text-xs font-mono text-gray-400">9</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Tue</div>
+              <div class="text-xs font-mono text-gray-400">10</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Wed</div>
+              <div class="text-xs font-mono text-gray-400">11</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Thu</div>
+              <div class="text-xs font-mono text-gray-400">12</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Fri</div>
+              <div class="text-xs font-mono text-gray-400">13</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3 bg-white/2">
+              <div class="text-[9px] font-mono text-gray-600">Sat</div>
+              <div class="text-xs font-mono text-gray-600">14</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3 bg-white/2">
+              <div class="text-[9px] font-mono text-gray-600">Sun</div>
+              <div class="text-xs font-mono text-gray-600">15</div>
+            </div>
+            <!-- TODAY -->
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3 today-column">
+              <div class="text-[9px] font-mono text-accent-indigo font-bold">Mon</div>
+              <div class="text-xs font-mono text-accent-indigo font-bold">16</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Tue</div>
+              <div class="text-xs font-mono text-gray-400">17</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Wed</div>
+              <div class="text-xs font-mono text-gray-400">18</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Thu</div>
+              <div class="text-xs font-mono text-gray-400">19</div>
+            </div>
+            <div class="flex-shrink-0 w-12 p-2 text-center border-r border-white/3">
+              <div class="text-[9px] font-mono text-gray-500">Fri</div>
+              <div class="text-xs font-mono text-gray-400">20</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Swim lanes -->
+        <div class="flex-1 overflow-y-auto scrollbar-none">
+
+          <!-- Team: Engineering -->
+          <div class="border-b border-white/5">
+            <!-- Team header -->
+            <div class="flex items-center swim-lane-row">
+              <div class="w-48 flex-shrink-0 p-3 border-r border-white/5">
+                <button class="flex items-center gap-2 text-sm font-medium cursor-pointer hover:text-accent-indigo transition-colors duration-200" aria-expanded="true" aria-controls="eng-members">
+                  <svg class="w-3 h-3 text-gray-400 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                  Engineering
+                  <span class="text-xs font-mono text-gray-500">(28)</span>
+                </button>
+              </div>
+              <div class="flex-1 flex relative h-8">
+                <!-- Aggregated team absence density bars -->
+                <div class="absolute top-1 bottom-1 rounded" style="left: calc(8 * 3rem); width: calc(5 * 3rem); background: rgba(129,140,248,0.15);" title="3 people out Mar 9-13" aria-label="3 people out Mar 9-13"></div>
+                <div class="absolute top-1 bottom-1 rounded today-column" style="left: calc(15 * 3rem); width: 3rem;" aria-hidden="true"></div>
+              </div>
+            </div>
+            <!-- Individual members -->
+            <div id="eng-members">
+              <div class="flex items-center swim-lane-row">
+                <div class="w-48 flex-shrink-0 p-2 pl-8 border-r border-white/5 flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-[9px] font-bold flex-shrink-0">AK</div>
+                  <span class="text-xs text-gray-300 truncate">Alex Kim</span>
+                </div>
+                <div class="flex-1 flex relative h-7">
+                  <!-- Absence bar: Mar 16-20, Vacation, approved -->
+                  <div class="absence-bar absolute top-1 bottom-1 rounded-full bg-accent-indigo/40 border border-accent-indigo/30 flex items-center px-2"
+                       style="left: calc(15 * 3rem + 2px); width: calc(5 * 3rem - 4px);"
+                       title="Alex Kim - Vacation - Mar 16-20 (Approved)"
+                       aria-label="Alex Kim vacation March 16 to 20, approved">
+                    <span class="text-[9px] font-mono text-accent-indigo truncate">Vacation</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center swim-lane-row">
+                <div class="w-48 flex-shrink-0 p-2 pl-8 border-r border-white/5 flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center text-[9px] font-bold flex-shrink-0">JC</div>
+                  <span class="text-xs text-gray-300 truncate">Jordan Chen</span>
+                </div>
+                <div class="flex-1 flex relative h-7">
+                  <!-- Absence bar: Mar 10-11, Sick, approved -->
+                  <div class="absence-bar absolute top-1 bottom-1 rounded-full bg-accent-emerald/40 border border-accent-emerald/30 flex items-center px-2"
+                       style="left: calc(9 * 3rem + 2px); width: calc(2 * 3rem - 4px);"
+                       title="Jordan Chen - Sick Leave - Mar 10-11 (Approved)"
+                       aria-label="Jordan Chen sick leave March 10 to 11, approved">
+                    <span class="text-[9px] font-mono text-accent-emerald truncate">Sick</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center swim-lane-row">
+                <div class="w-48 flex-shrink-0 p-2 pl-8 border-r border-white/5 flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-violet-600 flex items-center justify-center text-[9px] font-bold flex-shrink-0">MS</div>
+                  <span class="text-xs text-gray-300 truncate">Maria Santos</span>
+                </div>
+                <div class="flex-1 flex relative h-7">
+                  <!-- Pending request bar with dashed border -->
+                  <div class="absence-bar absolute top-1 bottom-1 rounded-full border border-dashed border-accent-amber/50 bg-accent-amber/10 flex items-center px-2"
+                       style="left: calc(17 * 3rem + 2px); width: calc(3 * 3rem - 4px);"
+                       title="Maria Santos - PTO - Mar 25-27 (Pending)"
+                       aria-label="Maria Santos PTO March 25 to 27, pending approval">
+                    <span class="text-[9px] font-mono text-accent-amber truncate">PTO (pending)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team: Design -->
+          <div class="border-b border-white/5">
+            <div class="flex items-center swim-lane-row">
+              <div class="w-48 flex-shrink-0 p-3 border-r border-white/5">
+                <button class="flex items-center gap-2 text-sm font-medium cursor-pointer hover:text-accent-indigo transition-colors duration-200" aria-expanded="true" aria-controls="design-members">
+                  <svg class="w-3 h-3 text-gray-400 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+                  Design
+                  <span class="text-xs font-mono text-gray-500">(12)</span>
+                </button>
+              </div>
+              <div class="flex-1 flex relative h-8"></div>
+            </div>
+            <div id="design-members">
+              <div class="flex items-center swim-lane-row">
+                <div class="w-48 flex-shrink-0 p-2 pl-8 border-r border-white/5 flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-full bg-gradient-to-br from-pink-400 to-rose-600 flex items-center justify-center text-[9px] font-bold flex-shrink-0">LR</div>
+                  <span class="text-xs text-gray-300 truncate">Lisa Ray</span>
+                </div>
+                <div class="flex-1 flex relative h-7">
+                  <div class="absence-bar absolute top-1 bottom-1 rounded-full bg-accent-rose/30 border border-accent-rose/30 flex items-center px-2"
+                       style="left: calc(15 * 3rem + 2px); width: calc(3 * 3rem - 4px);"
+                       title="Lisa Ray - PTO - Mar 16-18 (Rejected)"
+                       aria-label="Lisa Ray PTO March 16 to 18, rejected">
+                    <span class="text-[9px] font-mono text-accent-rose truncate line-through">PTO (rejected)</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center swim-lane-row">
+                <div class="w-48 flex-shrink-0 p-2 pl-8 border-r border-white/5 flex items-center gap-2">
+                  <div class="w-6 h-6 rounded-full bg-gradient-to-br from-orange-400 to-amber-600 flex items-center justify-center text-[9px] font-bold flex-shrink-0">TW</div>
+                  <span class="text-xs text-gray-300 truncate">Tom Wilson</span>
+                </div>
+                <div class="flex-1 flex relative h-7">
+                  <div class="absence-bar absolute top-1 bottom-1 rounded-full bg-accent-violet/40 border border-accent-violet/30 flex items-center px-2"
+                       style="left: calc(3 * 3rem + 2px); width: calc(3 * 3rem - 4px);"
+                       title="Tom Wilson - Conference - Mar 4-6 (Approved)"
+                       aria-label="Tom Wilson conference March 4 to 6, approved">
+                    <span class="text-[9px] font-mono text-accent-violet truncate">Conference</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coverage warning bar -->
+          <div class="flex items-center bg-accent-rose/5 border-b border-accent-rose/10">
+            <div class="w-48 flex-shrink-0 p-2 pl-4 border-r border-white/5">
+              <span class="text-[10px] font-mono text-accent-rose flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                Coverage Warning
+              </span>
+            </div>
+            <div class="flex-1 flex relative h-6">
+              <div class="absolute top-0 bottom-0 bg-accent-rose/8 border-l border-r border-accent-rose/15 flex items-center justify-center"
+                   style="left: calc(10 * 3rem); width: calc(1 * 3rem);"
+                   title="Mar 11: 18 out, below 85% coverage threshold"
+                   aria-label="Coverage warning March 11: below 85% threshold">
+                <span class="text-[8px] font-mono text-accent-rose">18 out</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Legend footer -->
+        <div class="border-t border-white/5 p-3 flex items-center gap-6 text-[10px] font-mono text-gray-500">
+          <div class="flex items-center gap-1.5">
+            <div class="w-8 h-3 rounded-full bg-accent-indigo/40 border border-accent-indigo/30"></div> Approved
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="w-8 h-3 rounded-full border border-dashed border-accent-amber/50 bg-accent-amber/10"></div> Pending
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="w-8 h-3 rounded-full bg-accent-rose/30 border border-accent-rose/30"></div> Rejected
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="w-8 h-3 rounded-full bg-accent-emerald/40 border border-accent-emerald/30"></div> Sick Leave
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="w-3 h-3 bg-white/2 rounded"></div> Weekend
+          </div>
+          <div class="flex items-center gap-1.5">
+            <div class="w-3 h-3 today-column rounded border border-accent-indigo/15"></div> Today
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+</body>
+</html>

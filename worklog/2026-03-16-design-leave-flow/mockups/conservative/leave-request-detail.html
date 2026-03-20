@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-50">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeaveFlow — Request Detail</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd', 400: '#60a5fa', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 800: '#1e40af', 900: '#1e3a8a' },
+            success: { 50: '#f0fdf4', 100: '#dcfce7', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' },
+            warning: { 50: '#fffbeb', 100: '#fef3c7', 500: '#f59e0b', 600: '#d97706' },
+            danger: { 50: '#fef2f2', 100: '#fee2e2', 500: '#ef4444', 600: '#dc2626' },
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="h-full">
+  <div class="min-h-full">
+    <!-- Navigation -->
+    <nav class="border-b border-gray-200 bg-white" aria-label="Main navigation">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 justify-between">
+          <div class="flex">
+            <div class="flex flex-shrink-0 items-center">
+              <span class="text-xl font-bold text-primary-600">LeaveFlow</span>
+            </div>
+            <div class="hidden sm:ml-8 sm:flex sm:space-x-6">
+              <a href="dashboard-home.html" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Dashboard</a>
+              <a href="#" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Calendar</a>
+              <a href="#" class="inline-flex items-center border-b-2 border-primary-500 px-1 pt-1 text-sm font-medium text-gray-900" aria-current="page">Approvals</a>
+              <a href="#" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Reports</a>
+              <a href="#" class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">Settings</a>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
+              <span class="text-sm font-medium text-primary-700">SA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Breadcrumb -->
+      <nav class="mb-6" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2 text-sm text-gray-500">
+          <li><a href="#" class="hover:text-gray-700">Approvals</a></li>
+          <li><svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg></li>
+          <li class="font-medium text-gray-900">REQ-2026-0147</li>
+        </ol>
+      </nav>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Request Details (2/3) -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Header card -->
+          <div class="rounded-lg bg-white p-6 shadow ring-1 ring-gray-200">
+            <div class="flex items-start justify-between">
+              <div>
+                <div class="flex items-center space-x-3">
+                  <div class="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
+                    <span class="text-sm font-medium text-purple-700">JD</span>
+                  </div>
+                  <div>
+                    <h1 class="text-xl font-semibold text-gray-900">John Doe</h1>
+                    <p class="text-sm text-gray-500">Engineering / Backend Team</p>
+                  </div>
+                </div>
+              </div>
+              <span class="inline-flex items-center rounded-full bg-warning-100 px-3 py-1 text-sm font-medium text-warning-700">
+                <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Pending Approval
+              </span>
+            </div>
+
+            <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-6">
+              <div>
+                <dt class="text-xs font-medium text-gray-500 uppercase">Leave Type</dt>
+                <dd class="mt-1 text-sm font-medium text-gray-900">Vacation</dd>
+              </div>
+              <div>
+                <dt class="text-xs font-medium text-gray-500 uppercase">Dates</dt>
+                <dd class="mt-1 text-sm font-medium text-gray-900">Mar 24 - Mar 28, 2026</dd>
+              </div>
+              <div>
+                <dt class="text-xs font-medium text-gray-500 uppercase">Working Days</dt>
+                <dd class="mt-1 text-sm font-medium text-gray-900">5 days</dd>
+              </div>
+              <div>
+                <dt class="text-xs font-medium text-gray-500 uppercase">Submitted</dt>
+                <dd class="mt-1 text-sm font-medium text-gray-900">Mar 13, 2026</dd>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-gray-100">
+              <dt class="text-xs font-medium text-gray-500 uppercase mb-1">Reason</dt>
+              <dd class="text-sm text-gray-700">Family vacation planned in advance. All sprint work will be handed off to Maya before departure.</dd>
+            </div>
+          </div>
+
+          <!-- Approval Chain Tracker ("Package Tracking" UX) -->
+          <div class="rounded-lg bg-white p-6 shadow ring-1 ring-gray-200">
+            <h2 class="text-base font-semibold text-gray-900 mb-6">Approval Progress</h2>
+
+            <!-- Vertical stepper -->
+            <ol class="relative" aria-label="Approval chain progress">
+              <!-- Step 1: Completed -->
+              <li class="pb-8 relative">
+                <div class="absolute top-5 left-4 -ml-px h-full w-0.5 bg-success-500" aria-hidden="true"></div>
+                <div class="relative flex items-start">
+                  <div class="flex-shrink-0">
+                    <div class="h-8 w-8 rounded-full bg-success-500 flex items-center justify-center ring-4 ring-white">
+                      <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    </div>
+                  </div>
+                  <div class="ml-4 min-w-0 flex-1">
+                    <div class="flex items-center justify-between">
+                      <p class="text-sm font-semibold text-gray-900">Step 1: Direct Manager</p>
+                      <span class="inline-flex items-center rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-700">Approved</span>
+                    </div>
+                    <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                      <span>Tom Park (Engineering Lead)</span>
+                      <span>Mar 14, 2026 at 09:23</span>
+                    </div>
+                  </div>
+                </div>
+              </li>
+
+              <!-- Step 2: Current / Pending -->
+              <li class="relative">
+                <div class="relative flex items-start">
+                  <div class="flex-shrink-0">
+                    <div class="h-8 w-8 rounded-full bg-warning-500 flex items-center justify-center ring-4 ring-white animate-pulse">
+                      <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    </div>
+                  </div>
+                  <div class="ml-4 min-w-0 flex-1">
+                    <div class="flex items-center justify-between">
+                      <p class="text-sm font-semibold text-gray-900">Step 2: HR Review</p>
+                      <span class="inline-flex items-center rounded-full bg-warning-100 px-2 py-0.5 text-xs font-medium text-warning-700">Awaiting</span>
+                    </div>
+                    <div class="mt-1 flex items-center space-x-4 text-sm text-gray-500">
+                      <span>Sarah Admin (HR)</span>
+                      <span class="text-warning-600 font-medium">Waiting 3 days</span>
+                    </div>
+                    <!-- HR action buttons -->
+                    <div class="mt-3 flex space-x-3">
+                      <button type="button" class="inline-flex items-center rounded-md bg-success-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-success-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success-600">
+                        <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                        Approve
+                      </button>
+                      <button type="button" class="inline-flex items-center rounded-md bg-white px-3 py-1.5 text-sm font-semibold text-danger-600 shadow-sm ring-1 ring-inset ring-danger-300 hover:bg-danger-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger-600">
+                        <svg class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        Reject
+                      </button>
+                      <button type="button" class="inline-flex items-center rounded-md bg-white px-3 py-1.5 text-sm font-medium text-warning-600 shadow-sm ring-1 ring-inset ring-warning-300 hover:bg-warning-50">
+                        Send Reminder
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Balance Impact -->
+          <div class="rounded-lg bg-white p-6 shadow ring-1 ring-gray-200">
+            <h2 class="text-base font-semibold text-gray-900 mb-4">Balance Impact</h2>
+            <div class="grid grid-cols-3 gap-4 text-center">
+              <div class="rounded-lg bg-gray-50 p-4">
+                <p class="text-xs font-medium text-gray-500 uppercase">Current Balance</p>
+                <p class="mt-1 text-2xl font-semibold text-gray-900">18</p>
+                <p class="text-xs text-gray-500">days remaining</p>
+              </div>
+              <div class="rounded-lg bg-warning-50 p-4">
+                <p class="text-xs font-medium text-gray-500 uppercase">This Request</p>
+                <p class="mt-1 text-2xl font-semibold text-warning-600">-5</p>
+                <p class="text-xs text-gray-500">working days</p>
+              </div>
+              <div class="rounded-lg bg-primary-50 p-4">
+                <p class="text-xs font-medium text-gray-500 uppercase">After Approval</p>
+                <p class="mt-1 text-2xl font-semibold text-primary-700">13</p>
+                <p class="text-xs text-gray-500">days remaining</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar (1/3) -->
+        <div class="space-y-6">
+          <!-- Request Info -->
+          <div class="rounded-lg bg-white p-6 shadow ring-1 ring-gray-200">
+            <h3 class="text-sm font-semibold text-gray-900 mb-4">Request Info</h3>
+            <dl class="space-y-3 text-sm">
+              <div class="flex justify-between">
+                <dt class="text-gray-500">Reference</dt>
+                <dd class="text-gray-900 font-mono text-xs">REQ-2026-0147</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt class="text-gray-500">Submitted</dt>
+                <dd class="text-gray-900">Mar 13, 2026</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt class="text-gray-500">Submitted Via</dt>
+                <dd class="text-gray-900">Slack Bot</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt class="text-gray-500">Workflow</dt>
+                <dd class="text-gray-900">Engineering Standard</dd>
+              </div>
+              <div class="flex justify-between">
+                <dt class="text-gray-500">Current Step</dt>
+                <dd class="text-gray-900">2 of 2</dd>
+              </div>
+            </dl>
+          </div>
+
+          <!-- Team Calendar Check -->
+          <div class="rounded-lg bg-white p-6 shadow ring-1 ring-gray-200">
+            <h3 class="text-sm font-semibold text-gray-900 mb-4">Team Availability</h3>
+            <p class="text-sm text-gray-500 mb-3">Mar 24 - 28 (requested period)</p>
+            <ul class="space-y-2">
+              <li class="flex items-center justify-between text-sm">
+                <span class="text-gray-700">Lisa Wong</span>
+                <span class="inline-flex items-center rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-700">Available</span>
+              </li>
+              <li class="flex items-center justify-between text-sm">
+                <span class="text-gray-700">Maya Johnson</span>
+                <span class="inline-flex items-center rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-700">Available</span>
+              </li>
+              <li class="flex items-center justify-between text-sm">
+                <span class="text-gray-700">Alex Chen</span>
+                <span class="inline-flex items-center rounded-full bg-success-50 px-2 py-0.5 text-xs font-medium text-success-700">Available</span>
+              </li>
+            </ul>
+            <div class="mt-3 pt-3 border-t border-gray-100">
+              <p class="text-xs text-gray-500">
+                <span class="font-medium text-success-600">Coverage: 83%</span> (5 of 6 team members available)
+              </p>
+            </div>
+          </div>
+
+          <!-- Audit Trail for this request -->
+          <div class="rounded-lg bg-white p-6 shadow ring-1 ring-gray-200">
+            <h3 class="text-sm font-semibold text-gray-900 mb-4">Activity Log</h3>
+            <ol class="space-y-3 text-sm">
+              <li class="flex space-x-3">
+                <div class="flex-shrink-0 mt-0.5">
+                  <div class="h-2 w-2 rounded-full bg-gray-300"></div>
+                </div>
+                <div>
+                  <p class="text-gray-900">Request submitted via Slack</p>
+                  <p class="text-xs text-gray-500">Mar 13, 2026 at 14:05</p>
+                </div>
+              </li>
+              <li class="flex space-x-3">
+                <div class="flex-shrink-0 mt-0.5">
+                  <div class="h-2 w-2 rounded-full bg-gray-300"></div>
+                </div>
+                <div>
+                  <p class="text-gray-900">Notified Tom Park (Step 1)</p>
+                  <p class="text-xs text-gray-500">Mar 13, 2026 at 14:05</p>
+                </div>
+              </li>
+              <li class="flex space-x-3">
+                <div class="flex-shrink-0 mt-0.5">
+                  <div class="h-2 w-2 rounded-full bg-success-500"></div>
+                </div>
+                <div>
+                  <p class="text-gray-900">Approved by Tom Park</p>
+                  <p class="text-xs text-gray-500">Mar 14, 2026 at 09:23</p>
+                </div>
+              </li>
+              <li class="flex space-x-3">
+                <div class="flex-shrink-0 mt-0.5">
+                  <div class="h-2 w-2 rounded-full bg-gray-300"></div>
+                </div>
+                <div>
+                  <p class="text-gray-900">Notified Sarah Admin (Step 2)</p>
+                  <p class="text-xs text-gray-500">Mar 14, 2026 at 09:23</p>
+                </div>
+              </li>
+              <li class="flex space-x-3">
+                <div class="flex-shrink-0 mt-0.5">
+                  <div class="h-2 w-2 rounded-full bg-warning-500"></div>
+                </div>
+                <div>
+                  <p class="text-gray-900 font-medium">Awaiting Sarah Admin</p>
+                  <p class="text-xs text-warning-600">3 days (stale threshold: 48h)</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

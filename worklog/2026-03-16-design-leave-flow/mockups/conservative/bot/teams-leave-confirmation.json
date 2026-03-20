@@ -1,0 +1,139 @@
+{
+  "_description": "Microsoft Teams Adaptive Card: Leave request confirmation sent to employee",
+  "_max_payload": "28KB",
+
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Leave Request Submitted",
+      "weight": "Bolder",
+      "size": "Large",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "Your leave request has been submitted and is now pending approval.",
+      "color": "Good",
+      "wrap": true
+    },
+    {
+      "type": "ColumnSet",
+      "separator": true,
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "TYPE",
+              "weight": "Bolder",
+              "size": "Small",
+              "color": "Accent",
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "Vacation",
+              "wrap": true
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "REFERENCE",
+              "weight": "Bolder",
+              "size": "Small",
+              "color": "Accent",
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "REQ-2026-0147",
+              "fontType": "Monospace",
+              "wrap": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "DATES",
+              "weight": "Bolder",
+              "size": "Small",
+              "color": "Accent",
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "Mar 24 - Mar 28, 2026",
+              "wrap": true
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "WORKING DAYS",
+              "weight": "Bolder",
+              "size": "Small",
+              "color": "Accent",
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "5 days",
+              "wrap": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "TextBlock",
+      "text": "**Approval Chain:**",
+      "separator": true,
+      "spacing": "Medium",
+      "wrap": true
+    },
+    {
+      "type": "TextBlock",
+      "text": "1. Tom Park (Direct Manager) — Pending\n2. Sarah Admin (HR) — Waiting",
+      "wrap": true,
+      "spacing": "Small"
+    },
+    {
+      "type": "TextBlock",
+      "text": "You will be notified when each step is completed.",
+      "size": "Small",
+      "isSubtle": true,
+      "wrap": true,
+      "separator": true
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "View in LeaveFlow",
+      "url": "https://app.leaveflow.com/requests/REQ-2026-0147"
+    }
+  ]
+}

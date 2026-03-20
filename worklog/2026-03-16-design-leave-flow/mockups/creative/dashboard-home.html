@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeaveFlow - HR Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            primary: { 50: '#EEF2FF', 100: '#E0E7FF', 200: '#C7D2FE', 300: '#A5B4FC', 400: '#818CF8', 500: '#6366F1', 600: '#4F46E5', 700: '#4338CA', 800: '#3730A3', 900: '#312E81' },
+            accent: { 50: '#F0FDF4', 100: '#DCFCE7', 400: '#4ADE80', 500: '#22C55E', 600: '#16A34A' },
+            coral: { 400: '#FB7185', 500: '#F43F5E' },
+            amber: { 400: '#FBBF24', 500: '#F59E0B' },
+            surface: { 50: '#FAFBFF', 100: '#F1F5FF', 200: '#E8EDFF' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes countUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(99,102,241,0.4); } 70% { box-shadow: 0 0 0 8px rgba(99,102,241,0); } 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .animate-count { animation: countUp 0.5s ease-out both; }
+    .animate-slide { animation: slideIn 0.4s ease-out both; }
+    .animate-fade { animation: fadeIn 0.6s ease-out both; }
+    .animate-pulse-ring { animation: pulse-ring 2s infinite; }
+    .glass { background: rgba(255,255,255,0.72); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.35); }
+    .glass-dark { background: rgba(255,255,255,0.08); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); }
+    @media (prefers-reduced-motion: reduce) { .animate-count, .animate-slide, .animate-fade { animation: none; } .animate-pulse-ring { animation: none; } }
+  </style>
+</head>
+<body class="bg-surface-50 font-sans text-gray-900 antialiased">
+
+  <!-- SIDEBAR -->
+  <aside class="fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-100 flex flex-col">
+    <!-- Logo -->
+    <div class="h-16 flex items-center gap-3 px-6 border-b border-gray-100">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center">
+        <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+      </div>
+      <span class="text-lg font-bold text-primary-900">LeaveFlow</span>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-primary-50 text-primary-700 font-medium cursor-pointer transition-colors duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+        Dashboard
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+        Absence Calendar
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+        Pending Approvals
+        <span class="ml-auto inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-coral-500 rounded-full animate-pulse-ring">7</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+        Workflows
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+        Employees
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+        Reports
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+        Audit Trail
+      </a>
+
+      <div class="pt-4 mt-4 border-t border-gray-100">
+        <p class="px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Configuration</p>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors duration-200">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
+          Leave Types
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-600 hover:bg-gray-50 hover:text-gray-900 cursor-pointer transition-colors duration-200">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          Settings
+        </a>
+      </div>
+    </nav>
+
+    <!-- User footer -->
+    <div class="p-4 border-t border-gray-100">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-semibold text-sm">SC</div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-gray-900 truncate">Sarah Chen</p>
+          <p class="text-xs text-gray-500">HR Administrator</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="ml-64 min-h-screen">
+    <!-- Top bar -->
+    <header class="sticky top-0 z-30 glass h-16 flex items-center justify-between px-8 border-b border-gray-100/60">
+      <div>
+        <h1 class="text-xl font-bold text-gray-900">Dashboard</h1>
+        <p class="text-xs text-gray-500">Monday, March 16, 2026</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="relative">
+          <input type="text" placeholder="Search employees, requests..." class="w-72 pl-10 pr-4 py-2 text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-400 transition-all duration-200" aria-label="Search" />
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+        </div>
+        <button class="relative p-2 rounded-xl text-gray-500 hover:text-gray-700 hover:bg-gray-100 cursor-pointer transition-colors duration-200" aria-label="Notifications">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+          <span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-coral-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">3</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="p-8 space-y-8">
+      <!-- Greeting + Quick Actions -->
+      <section class="flex items-end justify-between animate-fade">
+        <div>
+          <h2 class="text-2xl font-bold text-gray-900">Good morning, Sarah</h2>
+          <p class="text-gray-500 mt-1">Here is what is happening across your organization today.</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="px-4 py-2.5 text-sm font-medium text-primary-700 bg-primary-50 rounded-xl hover:bg-primary-100 cursor-pointer transition-colors duration-200 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            Export Report
+          </button>
+          <button class="px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-primary-500 to-primary-600 rounded-xl hover:from-primary-600 hover:to-primary-700 cursor-pointer transition-all duration-200 shadow-sm shadow-primary-500/25 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+            New Request
+          </button>
+        </div>
+      </section>
+
+      <!-- KPI Cards - Bento-style -->
+      <section class="grid grid-cols-4 gap-5">
+        <!-- Card 1: Pending Approvals -->
+        <div class="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-primary-200 hover:shadow-lg hover:shadow-primary-500/5 cursor-pointer transition-all duration-300 animate-count" style="animation-delay: 0.1s;">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl bg-amber-400/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium text-amber-700 bg-amber-50 rounded-full">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+              +3 today
+            </span>
+          </div>
+          <p class="text-3xl font-bold text-gray-900">7</p>
+          <p class="text-sm text-gray-500 mt-1">Pending Approvals</p>
+          <div class="mt-4 flex items-center gap-2">
+            <div class="flex -space-x-2">
+              <div class="w-6 h-6 rounded-full bg-primary-200 border-2 border-white"></div>
+              <div class="w-6 h-6 rounded-full bg-accent-200 border-2 border-white"></div>
+              <div class="w-6 h-6 rounded-full bg-coral-400/30 border-2 border-white"></div>
+            </div>
+            <span class="text-xs text-gray-400">2 stale (&gt;48h)</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Out Today -->
+        <div class="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-primary-200 hover:shadow-lg hover:shadow-primary-500/5 cursor-pointer transition-all duration-300 animate-count" style="animation-delay: 0.2s;">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl bg-primary-400/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+            </div>
+            <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium text-primary-700 bg-primary-50 rounded-full">
+              of 128 total
+            </span>
+          </div>
+          <p class="text-3xl font-bold text-gray-900">12</p>
+          <p class="text-sm text-gray-500 mt-1">People Out Today</p>
+          <div class="mt-4">
+            <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-primary-400 to-primary-600 rounded-full" style="width: 9.4%"></div>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">9.4% absence rate</p>
+          </div>
+        </div>
+
+        <!-- Card 3: This Week -->
+        <div class="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-primary-200 hover:shadow-lg hover:shadow-primary-500/5 cursor-pointer transition-all duration-300 animate-count" style="animation-delay: 0.3s;">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl bg-accent-400/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium text-accent-600 bg-accent-50 rounded-full">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+              -12%
+            </span>
+          </div>
+          <p class="text-3xl font-bold text-gray-900">23</p>
+          <p class="text-sm text-gray-500 mt-1">Requests This Week</p>
+          <div class="mt-4 flex items-end gap-1 h-8">
+            <div class="flex-1 bg-primary-100 rounded-sm" style="height: 40%"></div>
+            <div class="flex-1 bg-primary-200 rounded-sm" style="height: 60%"></div>
+            <div class="flex-1 bg-primary-300 rounded-sm" style="height: 80%"></div>
+            <div class="flex-1 bg-primary-400 rounded-sm" style="height: 45%"></div>
+            <div class="flex-1 bg-primary-500 rounded-sm" style="height: 100%"></div>
+            <div class="flex-1 bg-gray-100 rounded-sm" style="height: 20%"></div>
+            <div class="flex-1 bg-gray-100 rounded-sm" style="height: 10%"></div>
+          </div>
+        </div>
+
+        <!-- Card 4: Avg Approval Time -->
+        <div class="group bg-white rounded-2xl p-6 border border-gray-100 hover:border-primary-200 hover:shadow-lg hover:shadow-primary-500/5 cursor-pointer transition-all duration-300 animate-count" style="animation-delay: 0.4s;">
+          <div class="flex items-start justify-between mb-4">
+            <div class="w-11 h-11 rounded-xl bg-accent-400/10 flex items-center justify-center">
+              <svg class="w-6 h-6 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+            </div>
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium text-accent-600 bg-accent-50 rounded-full">On target</span>
+          </div>
+          <p class="text-3xl font-bold text-gray-900">2.4h</p>
+          <p class="text-sm text-gray-500 mt-1">Avg. Approval Time</p>
+          <div class="mt-4">
+            <div class="relative w-full h-2 bg-gray-100 rounded-full">
+              <div class="absolute inset-y-0 left-0 bg-gradient-to-r from-accent-400 to-accent-500 rounded-full" style="width: 60%"></div>
+              <div class="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-accent-500 rounded-full shadow" style="left: 60%"></div>
+            </div>
+            <div class="flex justify-between mt-1">
+              <span class="text-[10px] text-gray-400">0h</span>
+              <span class="text-[10px] text-gray-400">Target: 4h</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Middle Row: Upcoming Absences + Stale Requests -->
+      <section class="grid grid-cols-3 gap-5">
+        <!-- Upcoming Absences (2/3 width) -->
+        <div class="col-span-2 bg-white rounded-2xl border border-gray-100 overflow-hidden animate-slide" style="animation-delay: 0.3s;">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <h3 class="font-semibold text-gray-900">Upcoming Absences</h3>
+            <div class="flex items-center gap-2">
+              <select class="text-sm text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-primary-500/30 cursor-pointer" aria-label="Filter by team">
+                <option>All Teams</option>
+                <option>Engineering</option>
+                <option>Design</option>
+                <option>Marketing</option>
+              </select>
+              <button class="text-sm text-primary-600 hover:text-primary-700 font-medium cursor-pointer transition-colors duration-200">View Calendar</button>
+            </div>
+          </div>
+          <!-- Swimlane Mini-Calendar -->
+          <div class="p-6">
+            <!-- Day headers -->
+            <div class="grid grid-cols-[160px_repeat(5,1fr)] gap-2 mb-3">
+              <div></div>
+              <div class="text-center text-xs font-medium text-gray-400">Mon 16</div>
+              <div class="text-center text-xs font-medium text-gray-400">Tue 17</div>
+              <div class="text-center text-xs font-medium text-gray-400">Wed 18</div>
+              <div class="text-center text-xs font-medium text-gray-400">Thu 19</div>
+              <div class="text-center text-xs font-medium text-gray-400">Fri 20</div>
+            </div>
+            <!-- Swimlane rows -->
+            <div class="space-y-2">
+              <div class="grid grid-cols-[160px_repeat(5,1fr)] gap-2 items-center">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs font-semibold">JD</div>
+                  <span class="text-sm text-gray-700 truncate">Jake Daniels</span>
+                </div>
+                <div class="col-span-3 h-8 bg-primary-100 border border-primary-200 rounded-lg flex items-center justify-center text-xs font-medium text-primary-700">Vacation</div>
+                <div></div>
+              </div>
+              <div class="grid grid-cols-[160px_repeat(5,1fr)] gap-2 items-center">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center text-white text-xs font-semibold">ML</div>
+                  <span class="text-sm text-gray-700 truncate">Mei Lin</span>
+                </div>
+                <div></div>
+                <div class="col-span-2 h-8 bg-amber-100 border border-amber-200 rounded-lg flex items-center justify-center text-xs font-medium text-amber-700">Personal</div>
+                <div></div>
+              </div>
+              <div class="grid grid-cols-[160px_repeat(5,1fr)] gap-2 items-center">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white text-xs font-semibold">AP</div>
+                  <span class="text-sm text-gray-700 truncate">Alex Petrov</span>
+                </div>
+                <div class="h-8 bg-coral-100 border border-coral-400/30 rounded-lg flex items-center justify-center text-xs font-medium text-coral-500">Sick</div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+              <div class="grid grid-cols-[160px_repeat(5,1fr)] gap-2 items-center">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center text-white text-xs font-semibold">KN</div>
+                  <span class="text-sm text-gray-700 truncate">Kate Nguyen</span>
+                </div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div class="col-span-2 h-8 bg-primary-100 border border-primary-200 rounded-lg flex items-center justify-center text-xs font-medium text-primary-700">Vacation</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stale Requests (1/3 width) -->
+        <div class="bg-white rounded-2xl border border-gray-100 animate-slide" style="animation-delay: 0.4s;">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <h3 class="font-semibold text-gray-900">Stale Requests</h3>
+            <span class="inline-flex items-center px-2 py-0.5 text-xs font-bold text-coral-500 bg-coral-400/10 rounded-full">2 overdue</span>
+          </div>
+          <div class="p-4 space-y-3">
+            <!-- Stale item 1 -->
+            <div class="p-3 rounded-xl bg-coral-400/5 border border-coral-400/15 hover:border-coral-400/30 cursor-pointer transition-colors duration-200">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white text-xs font-semibold">TW</div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 truncate">Tom Wilson</p>
+                  <p class="text-xs text-gray-500">Vacation -- 5 days</p>
+                </div>
+              </div>
+              <div class="mt-2 flex items-center justify-between">
+                <span class="inline-flex items-center gap-1 text-xs text-coral-500 font-medium">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  Pending 72h
+                </span>
+                <button class="text-xs font-medium text-primary-600 hover:text-primary-700 cursor-pointer transition-colors duration-200">Send Reminder</button>
+              </div>
+            </div>
+            <!-- Stale item 2 -->
+            <div class="p-3 rounded-xl bg-coral-400/5 border border-coral-400/15 hover:border-coral-400/30 cursor-pointer transition-colors duration-200">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-xs font-semibold">RP</div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 truncate">Rachel Park</p>
+                  <p class="text-xs text-gray-500">Personal -- 1 day</p>
+                </div>
+              </div>
+              <div class="mt-2 flex items-center justify-between">
+                <span class="inline-flex items-center gap-1 text-xs text-coral-500 font-medium">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  Pending 52h
+                </span>
+                <button class="text-xs font-medium text-primary-600 hover:text-primary-700 cursor-pointer transition-colors duration-200">Send Reminder</button>
+              </div>
+            </div>
+            <!-- Recent approval -->
+            <div class="p-3 rounded-xl bg-accent-50 border border-accent-100 cursor-pointer transition-colors duration-200">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-violet-600 flex items-center justify-center text-white text-xs font-semibold">LK</div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 truncate">Lisa Kim</p>
+                  <p class="text-xs text-gray-500">Vacation -- 3 days</p>
+                </div>
+              </div>
+              <div class="mt-2 flex items-center">
+                <span class="inline-flex items-center gap-1 text-xs text-accent-600 font-medium">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  Approved 2h ago
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Row: Recent Activity + Leave Types Breakdown -->
+      <section class="grid grid-cols-3 gap-5">
+        <!-- Activity Feed -->
+        <div class="col-span-2 bg-white rounded-2xl border border-gray-100 animate-fade" style="animation-delay: 0.5s;">
+          <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <h3 class="font-semibold text-gray-900">Recent Activity</h3>
+            <button class="text-sm text-primary-600 hover:text-primary-700 font-medium cursor-pointer transition-colors duration-200">View Audit Trail</button>
+          </div>
+          <div class="divide-y divide-gray-50">
+            <div class="px-6 py-3.5 flex items-center gap-4 hover:bg-gray-50/50 cursor-pointer transition-colors duration-200">
+              <div class="w-8 h-8 rounded-full bg-accent-100 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-accent-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-900"><span class="font-medium">David Chen</span> approved <span class="font-medium">Mei Lin</span>'s personal leave</p>
+                <p class="text-xs text-gray-400 mt-0.5">Step 2 of 2 completed -- Fully approved</p>
+              </div>
+              <span class="text-xs text-gray-400 flex-shrink-0">12 min ago</span>
+            </div>
+            <div class="px-6 py-3.5 flex items-center gap-4 hover:bg-gray-50/50 cursor-pointer transition-colors duration-200">
+              <div class="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-900"><span class="font-medium">Kate Nguyen</span> submitted a vacation request</p>
+                <p class="text-xs text-gray-400 mt-0.5">Mar 19-20 -- Awaiting Team Lead approval</p>
+              </div>
+              <span class="text-xs text-gray-400 flex-shrink-0">45 min ago</span>
+            </div>
+            <div class="px-6 py-3.5 flex items-center gap-4 hover:bg-gray-50/50 cursor-pointer transition-colors duration-200">
+              <div class="w-8 h-8 rounded-full bg-coral-100 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-coral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-900"><span class="font-medium">John Park</span> rejected <span class="font-medium">Sam Torres</span>'s vacation</p>
+                <p class="text-xs text-gray-400 mt-0.5">Reason: "Team coverage below 60% that week"</p>
+              </div>
+              <span class="text-xs text-gray-400 flex-shrink-0">2h ago</span>
+            </div>
+            <div class="px-6 py-3.5 flex items-center gap-4 hover:bg-gray-50/50 cursor-pointer transition-colors duration-200">
+              <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm text-gray-900">Auto-escalation triggered for <span class="font-medium">Tom Wilson</span>'s request</p>
+                <p class="text-xs text-gray-400 mt-0.5">Pending 72h -- Escalated to Department Head</p>
+              </div>
+              <span class="text-xs text-gray-400 flex-shrink-0">3h ago</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leave Types Breakdown -->
+        <div class="bg-white rounded-2xl border border-gray-100 animate-fade" style="animation-delay: 0.6s;">
+          <div class="px-6 py-4 border-b border-gray-100">
+            <h3 class="font-semibold text-gray-900">Leave Usage This Month</h3>
+          </div>
+          <div class="p-6 space-y-4">
+            <!-- Donut Chart Placeholder -->
+            <div class="flex justify-center">
+              <div class="relative w-36 h-36">
+                <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#E8EDFF" stroke-width="14" />
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#6366F1" stroke-width="14" stroke-dasharray="188 126" stroke-linecap="round" />
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#818CF8" stroke-width="14" stroke-dasharray="63 251" stroke-dashoffset="-188" stroke-linecap="round" />
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#FB7185" stroke-width="14" stroke-dasharray="38 276" stroke-dashoffset="-251" stroke-linecap="round" />
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#FBBF24" stroke-width="14" stroke-dasharray="25 289" stroke-dashoffset="-289" stroke-linecap="round" />
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <p class="text-2xl font-bold text-gray-900">42</p>
+                  <p class="text-xs text-gray-400">total days</p>
+                </div>
+              </div>
+            </div>
+            <!-- Legend -->
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 rounded-full bg-primary-500"></div>
+                  <span class="text-sm text-gray-600">Vacation</span>
+                </div>
+                <span class="text-sm font-semibold text-gray-900">24 days</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 rounded-full bg-primary-400"></div>
+                  <span class="text-sm text-gray-600">Remote Work</span>
+                </div>
+                <span class="text-sm font-semibold text-gray-900">8 days</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 rounded-full bg-coral-400"></div>
+                  <span class="text-sm text-gray-600">Sick Leave</span>
+                </div>
+                <span class="text-sm font-semibold text-gray-900">5 days</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                  <span class="text-sm text-gray-600">Personal</span>
+                </div>
+                <span class="text-sm font-semibold text-gray-900">5 days</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+</body>
+</html>

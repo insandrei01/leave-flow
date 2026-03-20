@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeaveFlow — Leave Request Detail (Experimental)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            surface: { DEFAULT: '#0A0E1A', raised: '#111827', overlay: '#1F2937' },
+            accent: {
+              indigo: '#818CF8', violet: '#A78BFA', emerald: '#34D399',
+              amber: '#FBBF24', rose: '#FB7185', cyan: '#22D3EE',
+            },
+          },
+          keyframes: {
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' },
+            },
+          },
+          animation: {
+            shimmer: 'shimmer 3s ease-in-out infinite',
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .gradient-mesh {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(129, 140, 248, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(167, 139, 250, 0.08) 0%, transparent 50%);
+    }
+    .journey-line {
+      background: linear-gradient(to bottom,
+        rgba(52, 211, 153, 0.6) 0%,
+        rgba(129, 140, 248, 0.6) 33%,
+        rgba(167, 139, 250, 0.4) 66%,
+        rgba(255, 255, 255, 0.1) 100%
+      );
+    }
+    .active-step-glow {
+      box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.15), 0 0 24px rgba(129, 140, 248, 0.1);
+    }
+    .shimmer-bar {
+      background: linear-gradient(90deg,
+        rgba(129, 140, 248, 0.1) 0%,
+        rgba(129, 140, 248, 0.3) 50%,
+        rgba(129, 140, 248, 0.1) 100%
+      );
+      background-size: 200% 100%;
+    }
+  </style>
+</head>
+<body class="bg-surface text-white font-body min-h-screen gradient-mesh">
+
+  <main class="max-w-5xl mx-auto p-8">
+
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-2 text-xs text-gray-400 mb-6" aria-label="Breadcrumb">
+      <a href="#" class="hover:text-white cursor-pointer transition-colors duration-200">Dashboard</a>
+      <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+      <a href="#" class="hover:text-white cursor-pointer transition-colors duration-200">Pending Approvals</a>
+      <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+      <span class="text-white">LR-2026-0342</span>
+    </nav>
+
+    <!-- Request Header Card -->
+    <div class="glass-card rounded-2xl p-8 mb-6">
+      <div class="flex items-start justify-between">
+        <div class="flex items-center gap-5">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-600 flex items-center justify-center text-lg font-bold">
+            MS
+          </div>
+          <div>
+            <h1 class="font-display text-2xl font-bold tracking-tight">Maria Santos</h1>
+            <p class="text-gray-400 text-sm mt-0.5">Engineering &middot; Senior Frontend Developer</p>
+            <div class="flex items-center gap-3 mt-2">
+              <span class="text-xs font-mono bg-accent-indigo/10 text-accent-indigo px-2.5 py-1 rounded-full flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-accent-indigo animate-pulse"></span>
+                In Progress
+              </span>
+              <span class="text-xs font-mono text-gray-500">LR-2026-0342</span>
+            </div>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="font-display text-3xl font-bold text-white">3 <span class="text-lg text-gray-400">days</span></p>
+          <p class="text-sm text-gray-400 mt-0.5">PTO &middot; Paid Time Off</p>
+          <p class="text-xs font-mono text-gray-500 mt-1">Mar 25 - Mar 27, 2026</p>
+        </div>
+      </div>
+
+      <!-- Request details grid -->
+      <div class="grid grid-cols-4 gap-4 mt-6 pt-6 border-t border-white/5">
+        <div>
+          <p class="text-[10px] font-mono text-gray-500 uppercase tracking-wider">Submitted</p>
+          <p class="text-sm font-medium mt-1">Mar 16, 10:24am</p>
+          <p class="text-xs text-gray-500">via Slack bot</p>
+        </div>
+        <div>
+          <p class="text-[10px] font-mono text-gray-500 uppercase tracking-wider">Working Days</p>
+          <p class="text-sm font-medium mt-1">3 days</p>
+          <p class="text-xs text-gray-500">No holidays overlap</p>
+        </div>
+        <div>
+          <p class="text-[10px] font-mono text-gray-500 uppercase tracking-wider">Balance After</p>
+          <p class="text-sm font-medium mt-1">
+            <span class="text-accent-emerald">12</span>
+            <span class="text-gray-500">/</span>
+            <span>20 days</span>
+          </p>
+          <p class="text-xs text-gray-500">PTO remaining</p>
+        </div>
+        <div>
+          <p class="text-[10px] font-mono text-gray-500 uppercase tracking-wider">Team Impact</p>
+          <p class="text-sm font-medium mt-1">
+            <span class="text-accent-emerald">2</span> others out
+          </p>
+          <p class="text-xs text-gray-500">92% coverage OK</p>
+        </div>
+      </div>
+
+      <!-- Optional reason -->
+      <div class="mt-4 pt-4 border-t border-white/5">
+        <p class="text-[10px] font-mono text-gray-500 uppercase tracking-wider mb-1">Reason</p>
+        <p class="text-sm text-gray-300 italic">"Family visiting from out of town"</p>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- JOURNEY TIMELINE — Package tracking style -->
+    <!-- ============================================ -->
+    <div class="glass-card rounded-2xl p-8 mb-6" role="region" aria-label="Approval journey">
+      <h2 class="font-display text-lg font-semibold mb-6">Approval Journey</h2>
+
+      <div class="relative ml-6">
+        <!-- Vertical journey line -->
+        <div class="absolute left-0 top-0 bottom-0 w-0.5 journey-line" aria-hidden="true"></div>
+
+        <!-- Step 1: Submitted (completed) -->
+        <div class="relative pl-8 pb-10">
+          <div class="absolute left-[-7px] top-1 w-4 h-4 rounded-full bg-accent-emerald border-2 border-surface flex items-center justify-center" aria-hidden="true">
+            <svg class="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-semibold text-accent-emerald">Submitted</h3>
+              <span class="text-[10px] font-mono text-gray-500">Mar 16, 10:24am</span>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Maria submitted via Slack <span class="font-mono text-accent-indigo/60">/leave</span> command</p>
+            <p class="text-[10px] font-mono text-gray-500 mt-1">Validation passed: balance OK, no overlap, no blackout</p>
+          </div>
+        </div>
+
+        <!-- Step 2: Manager Review (current / active) -->
+        <div class="relative pl-8 pb-10">
+          <div class="absolute left-[-9px] top-0 w-5 h-5 rounded-full bg-accent-indigo border-2 border-surface active-step-glow flex items-center justify-center" aria-hidden="true">
+            <div class="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+          </div>
+          <div class="glass-card rounded-xl p-4 -ml-2 border-accent-indigo/20">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="text-sm font-semibold text-accent-indigo">Manager Approval</h3>
+                  <span class="shimmer-bar animate-shimmer text-[10px] font-mono px-2 py-0.5 rounded-full text-accent-indigo">Awaiting</span>
+                </div>
+                <div class="flex items-center gap-2 mt-2">
+                  <div class="w-6 h-6 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-[9px] font-bold">TW</div>
+                  <span class="text-xs text-gray-300">Tom Wilson</span>
+                  <span class="text-xs text-gray-500">&middot; Engineering Lead</span>
+                </div>
+                <p class="text-[10px] font-mono text-gray-500 mt-2">
+                  Sent via Slack DM &middot; <span class="text-accent-amber">15 min ago</span> &middot; Timeout in 23h 45m
+                </p>
+              </div>
+              <!-- Action buttons (visible to approver) -->
+              <div class="flex gap-2">
+                <button class="bg-accent-emerald/20 hover:bg-accent-emerald/30 text-accent-emerald text-xs font-medium px-4 py-2 rounded-xl cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-emerald/50">
+                  Approve
+                </button>
+                <button class="bg-accent-rose/20 hover:bg-accent-rose/30 text-accent-rose text-xs font-medium px-4 py-2 rounded-xl cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-rose/50">
+                  Reject
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: HR Review (future / dimmed) -->
+        <div class="relative pl-8 pb-10 opacity-40">
+          <div class="absolute left-[-7px] top-1 w-4 h-4 rounded-full bg-white/10 border-2 border-surface" aria-hidden="true"></div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-semibold text-gray-400">HR Review</h3>
+            </div>
+            <div class="flex items-center gap-2 mt-2">
+              <div class="w-6 h-6 rounded-full bg-gradient-to-br from-accent-emerald to-accent-cyan flex items-center justify-center text-[9px] font-bold">SC</div>
+              <span class="text-xs text-gray-400">Sarah Chen</span>
+              <span class="text-xs text-gray-500">&middot; HR Administrator</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Resolved (future / dimmed) -->
+        <div class="relative pl-8 opacity-40">
+          <div class="absolute left-[-7px] top-1 w-4 h-4 rounded-full bg-white/10 border-2 border-surface" aria-hidden="true"></div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-sm font-semibold text-gray-400">Resolved</h3>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Calendar sync, balance deduction, team notification</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Audit Trail -->
+    <div class="glass-card rounded-2xl p-8" role="region" aria-label="Audit trail">
+      <h2 class="font-display text-lg font-semibold mb-4">Audit Trail</h2>
+      <div class="space-y-3">
+        <div class="flex items-center gap-4 text-xs">
+          <span class="font-mono text-gray-500 w-36 flex-shrink-0">2026-03-16 10:24</span>
+          <span class="text-accent-emerald bg-accent-emerald/10 px-2 py-0.5 rounded-full font-mono w-20 text-center flex-shrink-0">CREATE</span>
+          <span class="text-gray-300">Request created by <span class="text-white font-medium">Maria Santos</span> via Slack</span>
+        </div>
+        <div class="flex items-center gap-4 text-xs">
+          <span class="font-mono text-gray-500 w-36 flex-shrink-0">2026-03-16 10:24</span>
+          <span class="text-accent-indigo bg-accent-indigo/10 px-2 py-0.5 rounded-full font-mono w-20 text-center flex-shrink-0">VALIDATE</span>
+          <span class="text-gray-300">Auto-validation passed: balance, overlap, blackout, coverage</span>
+        </div>
+        <div class="flex items-center gap-4 text-xs">
+          <span class="font-mono text-gray-500 w-36 flex-shrink-0">2026-03-16 10:24</span>
+          <span class="text-accent-violet bg-accent-violet/10 px-2 py-0.5 rounded-full font-mono w-20 text-center flex-shrink-0">NOTIFY</span>
+          <span class="text-gray-300">Approval request sent to <span class="text-white font-medium">Tom Wilson</span> via Slack DM</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

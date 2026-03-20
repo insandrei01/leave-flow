@@ -1,0 +1,142 @@
+{
+  "description": "Fallback holiday data for 2026–2027. Used when the Nager.Date API is unavailable.",
+  "generatedAt": "2026-01-01T00:00:00Z",
+  "countries": {
+    "US": {
+      "name": "United States",
+      "holidays": [
+        { "date": "2026-01-01", "name": "New Year's Day", "year": 2026 },
+        { "date": "2026-01-19", "name": "Martin Luther King Jr. Day", "year": 2026 },
+        { "date": "2026-02-16", "name": "Presidents' Day", "year": 2026 },
+        { "date": "2026-05-25", "name": "Memorial Day", "year": 2026 },
+        { "date": "2026-07-04", "name": "Independence Day", "year": 2026 },
+        { "date": "2026-09-07", "name": "Labor Day", "year": 2026 },
+        { "date": "2026-11-11", "name": "Veterans Day", "year": 2026 },
+        { "date": "2026-11-26", "name": "Thanksgiving Day", "year": 2026 },
+        { "date": "2026-12-25", "name": "Christmas Day", "year": 2026 },
+        { "date": "2027-01-01", "name": "New Year's Day", "year": 2027 },
+        { "date": "2027-01-18", "name": "Martin Luther King Jr. Day", "year": 2027 },
+        { "date": "2027-02-15", "name": "Presidents' Day", "year": 2027 },
+        { "date": "2027-05-31", "name": "Memorial Day", "year": 2027 },
+        { "date": "2027-07-04", "name": "Independence Day", "year": 2027 },
+        { "date": "2027-09-06", "name": "Labor Day", "year": 2027 },
+        { "date": "2027-11-11", "name": "Veterans Day", "year": 2027 },
+        { "date": "2027-11-25", "name": "Thanksgiving Day", "year": 2027 },
+        { "date": "2027-12-25", "name": "Christmas Day", "year": 2027 }
+      ]
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "holidays": [
+        { "date": "2026-01-01", "name": "New Year's Day", "year": 2026 },
+        { "date": "2026-04-03", "name": "Good Friday", "year": 2026 },
+        { "date": "2026-04-06", "name": "Easter Monday", "year": 2026 },
+        { "date": "2026-05-04", "name": "Early May Bank Holiday", "year": 2026 },
+        { "date": "2026-05-25", "name": "Spring Bank Holiday", "year": 2026 },
+        { "date": "2026-08-31", "name": "Summer Bank Holiday", "year": 2026 },
+        { "date": "2026-12-25", "name": "Christmas Day", "year": 2026 },
+        { "date": "2026-12-28", "name": "Boxing Day (observed)", "year": 2026 },
+        { "date": "2027-01-01", "name": "New Year's Day", "year": 2027 },
+        { "date": "2027-03-26", "name": "Good Friday", "year": 2027 },
+        { "date": "2027-03-29", "name": "Easter Monday", "year": 2027 },
+        { "date": "2027-05-03", "name": "Early May Bank Holiday", "year": 2027 },
+        { "date": "2027-05-31", "name": "Spring Bank Holiday", "year": 2027 },
+        { "date": "2027-08-30", "name": "Summer Bank Holiday", "year": 2027 },
+        { "date": "2027-12-27", "name": "Christmas Day (observed)", "year": 2027 },
+        { "date": "2027-12-28", "name": "Boxing Day (observed)", "year": 2027 }
+      ]
+    },
+    "DE": {
+      "name": "Germany",
+      "holidays": [
+        { "date": "2026-01-01", "name": "New Year's Day", "year": 2026 },
+        { "date": "2026-04-03", "name": "Good Friday", "year": 2026 },
+        { "date": "2026-04-06", "name": "Easter Monday", "year": 2026 },
+        { "date": "2026-05-01", "name": "Labour Day", "year": 2026 },
+        { "date": "2026-05-14", "name": "Ascension Day", "year": 2026 },
+        { "date": "2026-05-25", "name": "Whit Monday", "year": 2026 },
+        { "date": "2026-10-03", "name": "German Unity Day", "year": 2026 },
+        { "date": "2026-12-25", "name": "Christmas Day", "year": 2026 },
+        { "date": "2026-12-26", "name": "Boxing Day", "year": 2026 },
+        { "date": "2027-01-01", "name": "New Year's Day", "year": 2027 },
+        { "date": "2027-03-26", "name": "Good Friday", "year": 2027 },
+        { "date": "2027-03-29", "name": "Easter Monday", "year": 2027 },
+        { "date": "2027-05-01", "name": "Labour Day", "year": 2027 },
+        { "date": "2027-05-06", "name": "Ascension Day", "year": 2027 },
+        { "date": "2027-05-17", "name": "Whit Monday", "year": 2027 },
+        { "date": "2027-10-03", "name": "German Unity Day", "year": 2027 },
+        { "date": "2027-12-25", "name": "Christmas Day", "year": 2027 },
+        { "date": "2027-12-26", "name": "Boxing Day", "year": 2027 }
+      ]
+    },
+    "FR": {
+      "name": "France",
+      "holidays": [
+        { "date": "2026-01-01", "name": "New Year's Day", "year": 2026 },
+        { "date": "2026-04-06", "name": "Easter Monday", "year": 2026 },
+        { "date": "2026-05-01", "name": "Labour Day", "year": 2026 },
+        { "date": "2026-05-08", "name": "Victory in Europe Day", "year": 2026 },
+        { "date": "2026-05-14", "name": "Ascension Day", "year": 2026 },
+        { "date": "2026-05-25", "name": "Whit Monday", "year": 2026 },
+        { "date": "2026-07-14", "name": "Bastille Day", "year": 2026 },
+        { "date": "2026-08-15", "name": "Assumption of Mary", "year": 2026 },
+        { "date": "2026-11-01", "name": "All Saints Day", "year": 2026 },
+        { "date": "2026-11-11", "name": "Armistice Day", "year": 2026 },
+        { "date": "2026-12-25", "name": "Christmas Day", "year": 2026 },
+        { "date": "2027-01-01", "name": "New Year's Day", "year": 2027 },
+        { "date": "2027-03-29", "name": "Easter Monday", "year": 2027 },
+        { "date": "2027-05-01", "name": "Labour Day", "year": 2027 },
+        { "date": "2027-05-08", "name": "Victory in Europe Day", "year": 2027 },
+        { "date": "2027-05-06", "name": "Ascension Day", "year": 2027 },
+        { "date": "2027-05-17", "name": "Whit Monday", "year": 2027 },
+        { "date": "2027-07-14", "name": "Bastille Day", "year": 2027 },
+        { "date": "2027-08-15", "name": "Assumption of Mary", "year": 2027 },
+        { "date": "2027-11-01", "name": "All Saints Day", "year": 2027 },
+        { "date": "2027-11-11", "name": "Armistice Day", "year": 2027 },
+        { "date": "2027-12-25", "name": "Christmas Day", "year": 2027 }
+      ]
+    },
+    "AU": {
+      "name": "Australia",
+      "holidays": [
+        { "date": "2026-01-01", "name": "New Year's Day", "year": 2026 },
+        { "date": "2026-01-26", "name": "Australia Day", "year": 2026 },
+        { "date": "2026-04-03", "name": "Good Friday", "year": 2026 },
+        { "date": "2026-04-06", "name": "Easter Monday", "year": 2026 },
+        { "date": "2026-04-25", "name": "ANZAC Day", "year": 2026 },
+        { "date": "2026-12-25", "name": "Christmas Day", "year": 2026 },
+        { "date": "2026-12-26", "name": "Boxing Day", "year": 2026 },
+        { "date": "2027-01-01", "name": "New Year's Day", "year": 2027 },
+        { "date": "2027-01-26", "name": "Australia Day", "year": 2027 },
+        { "date": "2027-03-26", "name": "Good Friday", "year": 2027 },
+        { "date": "2027-03-29", "name": "Easter Monday", "year": 2027 },
+        { "date": "2027-04-25", "name": "ANZAC Day", "year": 2027 },
+        { "date": "2027-12-27", "name": "Christmas Day (observed)", "year": 2027 },
+        { "date": "2027-12-28", "name": "Boxing Day (observed)", "year": 2027 }
+      ]
+    },
+    "CA": {
+      "name": "Canada",
+      "holidays": [
+        { "date": "2026-01-01", "name": "New Year's Day", "year": 2026 },
+        { "date": "2026-04-03", "name": "Good Friday", "year": 2026 },
+        { "date": "2026-05-18", "name": "Victoria Day", "year": 2026 },
+        { "date": "2026-07-01", "name": "Canada Day", "year": 2026 },
+        { "date": "2026-09-07", "name": "Labour Day", "year": 2026 },
+        { "date": "2026-10-12", "name": "Thanksgiving", "year": 2026 },
+        { "date": "2026-11-11", "name": "Remembrance Day", "year": 2026 },
+        { "date": "2026-12-25", "name": "Christmas Day", "year": 2026 },
+        { "date": "2026-12-26", "name": "Boxing Day", "year": 2026 },
+        { "date": "2027-01-01", "name": "New Year's Day", "year": 2027 },
+        { "date": "2027-03-26", "name": "Good Friday", "year": 2027 },
+        { "date": "2027-05-24", "name": "Victoria Day", "year": 2027 },
+        { "date": "2027-07-01", "name": "Canada Day", "year": 2027 },
+        { "date": "2027-09-06", "name": "Labour Day", "year": 2027 },
+        { "date": "2027-10-11", "name": "Thanksgiving", "year": 2027 },
+        { "date": "2027-11-11", "name": "Remembrance Day", "year": 2027 },
+        { "date": "2027-12-27", "name": "Christmas Day (observed)", "year": 2027 },
+        { "date": "2027-12-28", "name": "Boxing Day (observed)", "year": 2027 }
+      ]
+    }
+  }
+}

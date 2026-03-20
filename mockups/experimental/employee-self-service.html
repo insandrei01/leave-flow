@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeaveFlow — Employee Self-Service (Experimental)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            surface: { DEFAULT: '#0A0E1A', raised: '#111827', overlay: '#1F2937' },
+            accent: {
+              indigo: '#818CF8', violet: '#A78BFA', emerald: '#34D399',
+              amber: '#FBBF24', rose: '#FB7185', cyan: '#22D3EE',
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .glass-card:hover { background: rgba(255, 255, 255, 0.07); border-color: rgba(255, 255, 255, 0.12); }
+    .gradient-mesh {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(129, 140, 248, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(167, 139, 250, 0.08) 0%, transparent 50%);
+    }
+    .balance-ring { transition: stroke-dashoffset 800ms cubic-bezier(0.16, 1, 0.3, 1); }
+  </style>
+</head>
+<body class="bg-surface text-white font-body min-h-screen gradient-mesh">
+
+  <div class="max-w-6xl mx-auto p-8">
+
+    <!-- Personal Header -->
+    <header class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-5">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400 to-indigo-600 flex items-center justify-center text-xl font-bold">
+          MS
+        </div>
+        <div>
+          <h1 class="font-display text-2xl font-bold tracking-tight">My Leave</h1>
+          <p class="text-gray-400 text-sm mt-0.5">Maria Santos &middot; Engineering</p>
+        </div>
+      </div>
+      <button class="bg-accent-indigo hover:bg-accent-indigo/80 text-white rounded-xl px-5 py-2.5 text-sm font-medium cursor-pointer flex items-center gap-2 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-indigo/50">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+        Request Leave
+      </button>
+    </header>
+
+    <!-- Bento Grid -->
+    <div class="grid grid-cols-3 gap-4">
+
+      <!-- ============================================ -->
+      <!-- Balance Rings (radial visualization) — 2col -->
+      <!-- ============================================ -->
+      <div class="glass-card rounded-2xl p-6 col-span-2" role="region" aria-label="Leave balances">
+        <h2 class="font-display text-lg font-semibold mb-6">My Balances</h2>
+        <div class="grid grid-cols-3 gap-6">
+
+          <!-- Vacation balance ring -->
+          <div class="flex flex-col items-center">
+            <div class="relative w-28 h-28">
+              <svg class="w-28 h-28 -rotate-90" viewBox="0 0 100 100" aria-label="Vacation: 15 of 20 days remaining">
+                <circle cx="50" cy="50" r="42" stroke="rgba(255,255,255,0.04)" stroke-width="8" fill="none" />
+                <circle cx="50" cy="50" r="42" stroke="#818CF8" stroke-width="8" fill="none"
+                  stroke-dasharray="264" stroke-dashoffset="66" stroke-linecap="round" class="balance-ring" />
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="font-display text-2xl font-bold">15</span>
+                <span class="text-[10px] font-mono text-gray-400">of 20</span>
+              </div>
+            </div>
+            <p class="text-sm font-medium mt-3">Vacation</p>
+            <p class="text-[10px] font-mono text-gray-500">5 used &middot; 75% left</p>
+          </div>
+
+          <!-- Sick leave balance -->
+          <div class="flex flex-col items-center">
+            <div class="relative w-28 h-28">
+              <svg class="w-28 h-28 -rotate-90" viewBox="0 0 100 100" aria-label="Sick Leave: 9 of 10 days remaining">
+                <circle cx="50" cy="50" r="42" stroke="rgba(255,255,255,0.04)" stroke-width="8" fill="none" />
+                <circle cx="50" cy="50" r="42" stroke="#34D399" stroke-width="8" fill="none"
+                  stroke-dasharray="264" stroke-dashoffset="26" stroke-linecap="round" class="balance-ring" />
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="font-display text-2xl font-bold">9</span>
+                <span class="text-[10px] font-mono text-gray-400">of 10</span>
+              </div>
+            </div>
+            <p class="text-sm font-medium mt-3">Sick Leave</p>
+            <p class="text-[10px] font-mono text-gray-500">1 used &middot; 90% left</p>
+          </div>
+
+          <!-- Personal days balance -->
+          <div class="flex flex-col items-center">
+            <div class="relative w-28 h-28">
+              <svg class="w-28 h-28 -rotate-90" viewBox="0 0 100 100" aria-label="Personal Days: 2 of 5 days remaining">
+                <circle cx="50" cy="50" r="42" stroke="rgba(255,255,255,0.04)" stroke-width="8" fill="none" />
+                <circle cx="50" cy="50" r="42" stroke="#A78BFA" stroke-width="8" fill="none"
+                  stroke-dasharray="264" stroke-dashoffset="158" stroke-linecap="round" class="balance-ring" />
+              </svg>
+              <div class="absolute inset-0 flex flex-col items-center justify-center">
+                <span class="font-display text-2xl font-bold text-accent-amber">2</span>
+                <span class="text-[10px] font-mono text-gray-400">of 5</span>
+              </div>
+            </div>
+            <p class="text-sm font-medium mt-3">Personal</p>
+            <p class="text-[10px] font-mono text-accent-amber">3 used &middot; 40% left</p>
+          </div>
+
+        </div>
+
+        <!-- Accrual info -->
+        <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
+          <p class="text-xs text-gray-400">
+            Next accrual: <span class="text-accent-indigo font-mono">Apr 1</span> &middot; +1.67 vacation days
+          </p>
+          <p class="text-xs text-gray-400">
+            Year-end carryover limit: <span class="text-white font-mono">5 days</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- Active Request Tracker — 1col -->
+      <!-- ============================================ -->
+      <div class="glass-card rounded-2xl p-6" role="region" aria-label="Active request">
+        <h2 class="font-display text-sm font-semibold mb-4 flex items-center gap-2">
+          Active Request
+          <span class="w-1.5 h-1.5 rounded-full bg-accent-indigo animate-pulse" aria-hidden="true"></span>
+        </h2>
+
+        <div class="glass-card rounded-xl p-4 mb-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-mono text-accent-indigo">PTO</span>
+            <span class="text-xs font-mono text-gray-500">LR-0342</span>
+          </div>
+          <p class="text-sm font-medium">Mar 25-27</p>
+          <p class="text-xs text-gray-400">3 working days</p>
+        </div>
+
+        <!-- Mini journey tracker -->
+        <div class="space-y-3 relative ml-2 before:absolute before:left-[5px] before:top-2 before:bottom-2 before:w-px before:bg-gradient-to-b before:from-accent-emerald/50 before:via-accent-indigo/30 before:to-white/5">
+          <div class="flex items-center gap-3 pl-5 relative">
+            <div class="absolute left-0 w-3 h-3 rounded-full bg-accent-emerald border border-surface" aria-hidden="true"></div>
+            <div>
+              <p class="text-xs font-medium text-accent-emerald">Submitted</p>
+              <p class="text-[10px] font-mono text-gray-500">Today, 10:24am</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 pl-5 relative">
+            <div class="absolute left-0 w-3 h-3 rounded-full bg-accent-indigo border border-surface animate-pulse" aria-hidden="true"></div>
+            <div>
+              <p class="text-xs font-medium text-accent-indigo">Manager Review</p>
+              <p class="text-[10px] font-mono text-gray-500">Awaiting Tom W.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 pl-5 relative opacity-30">
+            <div class="absolute left-0 w-3 h-3 rounded-full bg-white/20 border border-surface" aria-hidden="true"></div>
+            <div>
+              <p class="text-xs text-gray-500">HR Review</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 pl-5 relative opacity-30">
+            <div class="absolute left-0 w-3 h-3 rounded-full bg-white/20 border border-surface" aria-hidden="true"></div>
+            <div>
+              <p class="text-xs text-gray-500">Approved</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- Request History — 2col -->
+      <!-- ============================================ -->
+      <div class="glass-card rounded-2xl p-6 col-span-2" role="region" aria-label="Request history">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-display text-lg font-semibold">History</h2>
+          <div class="flex items-center gap-2">
+            <button class="text-xs font-mono text-accent-indigo bg-accent-indigo/10 px-2.5 py-1 rounded-lg cursor-pointer">All</button>
+            <button class="text-xs font-mono text-gray-400 hover:text-white px-2.5 py-1 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200">2026</button>
+            <button class="text-xs font-mono text-gray-400 hover:text-white px-2.5 py-1 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200">2025</button>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <!-- Row -->
+          <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/3 cursor-pointer transition-all duration-200">
+            <div class="w-2 h-8 rounded-full bg-accent-indigo/40" aria-hidden="true"></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium">Vacation</p>
+              <p class="text-xs text-gray-400 font-mono">Feb 10-14 &middot; 5 days</p>
+            </div>
+            <span class="text-xs font-mono text-accent-emerald bg-accent-emerald/10 px-2 py-0.5 rounded-full">Approved</span>
+          </div>
+          <!-- Row -->
+          <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/3 cursor-pointer transition-all duration-200">
+            <div class="w-2 h-8 rounded-full bg-accent-emerald/40" aria-hidden="true"></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium">Sick Leave</p>
+              <p class="text-xs text-gray-400 font-mono">Jan 22 &middot; 1 day</p>
+            </div>
+            <span class="text-xs font-mono text-accent-emerald bg-accent-emerald/10 px-2 py-0.5 rounded-full">Approved</span>
+          </div>
+          <!-- Row -->
+          <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/3 cursor-pointer transition-all duration-200">
+            <div class="w-2 h-8 rounded-full bg-accent-violet/40" aria-hidden="true"></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium">Personal Day</p>
+              <p class="text-xs text-gray-400 font-mono">Jan 6 &middot; 1 day</p>
+            </div>
+            <span class="text-xs font-mono text-accent-emerald bg-accent-emerald/10 px-2 py-0.5 rounded-full">Approved</span>
+          </div>
+          <!-- Row -->
+          <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/3 cursor-pointer transition-all duration-200">
+            <div class="w-2 h-8 rounded-full bg-accent-violet/40" aria-hidden="true"></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium">Personal Day</p>
+              <p class="text-xs text-gray-400 font-mono">Dec 23, 2025 &middot; 1 day</p>
+            </div>
+            <span class="text-xs font-mono text-accent-rose bg-accent-rose/10 px-2 py-0.5 rounded-full">Rejected</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- Team Calendar Mini — 1col -->
+      <!-- ============================================ -->
+      <div class="glass-card rounded-2xl p-6" role="region" aria-label="Team absences this week">
+        <h2 class="font-display text-sm font-semibold mb-4">Team This Week</h2>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-[9px] font-bold flex-shrink-0">AK</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-medium truncate">Alex Kim</p>
+              <p class="text-[10px] text-gray-500 font-mono">Mon-Fri</p>
+            </div>
+            <div class="flex gap-0.5">
+              <div class="w-5 h-3 rounded-sm bg-accent-indigo/30" title="Mon" aria-label="Monday out"></div>
+              <div class="w-5 h-3 rounded-sm bg-accent-indigo/30" title="Tue" aria-label="Tuesday out"></div>
+              <div class="w-5 h-3 rounded-sm bg-accent-indigo/30" title="Wed" aria-label="Wednesday out"></div>
+              <div class="w-5 h-3 rounded-sm bg-accent-indigo/30" title="Thu" aria-label="Thursday out"></div>
+              <div class="w-5 h-3 rounded-sm bg-accent-indigo/30" title="Fri" aria-label="Friday out"></div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="w-7 h-7 rounded-full bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center text-[9px] font-bold flex-shrink-0">RH</div>
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-medium truncate">Rachel Huang</p>
+              <p class="text-[10px] text-gray-500 font-mono">Wed-Thu</p>
+            </div>
+            <div class="flex gap-0.5">
+              <div class="w-5 h-3 rounded-sm bg-white/5" title="Mon"></div>
+              <div class="w-5 h-3 rounded-sm bg-white/5" title="Tue"></div>
+              <div class="w-5 h-3 rounded-sm bg-accent-emerald/30" title="Wed" aria-label="Wednesday out"></div>
+              <div class="w-5 h-3 rounded-sm bg-accent-emerald/30" title="Thu" aria-label="Thursday out"></div>
+              <div class="w-5 h-3 rounded-sm bg-white/5" title="Fri"></div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-white/5">
+          <p class="text-[10px] font-mono text-gray-500">Team coverage: <span class="text-accent-emerald">89%</span> this week</p>
+        </div>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- Upcoming Holidays — full width -->
+      <!-- ============================================ -->
+      <div class="glass-card rounded-2xl p-6 col-span-3" role="region" aria-label="Upcoming holidays">
+        <h2 class="font-display text-sm font-semibold mb-3">Upcoming Holidays</h2>
+        <div class="flex gap-4 overflow-x-auto pb-2">
+          <div class="flex-shrink-0 glass-card rounded-xl p-3 min-w-[140px] hover:bg-white/6 cursor-pointer transition-all duration-200">
+            <p class="text-xs font-mono text-accent-amber">Mar 27</p>
+            <p class="text-sm font-medium mt-0.5">Good Friday</p>
+            <p class="text-[10px] text-gray-500">11 days away</p>
+          </div>
+          <div class="flex-shrink-0 glass-card rounded-xl p-3 min-w-[140px] hover:bg-white/6 cursor-pointer transition-all duration-200">
+            <p class="text-xs font-mono text-accent-amber">May 1</p>
+            <p class="text-sm font-medium mt-0.5">Labour Day</p>
+            <p class="text-[10px] text-gray-500">46 days away</p>
+          </div>
+          <div class="flex-shrink-0 glass-card rounded-xl p-3 min-w-[140px] hover:bg-white/6 cursor-pointer transition-all duration-200">
+            <p class="text-xs font-mono text-accent-amber">May 25</p>
+            <p class="text-sm font-medium mt-0.5">Memorial Day</p>
+            <p class="text-[10px] text-gray-500">70 days away</p>
+          </div>
+          <div class="flex-shrink-0 glass-card rounded-xl p-3 min-w-[140px] hover:bg-white/6 cursor-pointer transition-all duration-200">
+            <p class="text-xs font-mono text-accent-amber">Jul 4</p>
+            <p class="text-sm font-medium mt-0.5">Independence Day</p>
+            <p class="text-[10px] text-gray-500">110 days away</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

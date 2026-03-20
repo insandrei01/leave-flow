@@ -1,0 +1,78 @@
+{
+  "_description": "Slack Block Kit: Request status tracker (package tracking visualization) — response to /leave status",
+  "_notes": "Uses emoji-based step visualization. Shows most recent 5 requests. This is the 'package tracking' UX rendered in text.",
+
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Your Leave Requests",
+        "emoji": true
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":palm_tree: *Vacation* — Mar 24-28, 2026 (5 days)\n`REQ-0147` :hourglass_flowing_sand: *Pending*"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":package: *Approval Progress:*\n:white_check_mark: Submitted :arrow_right: :white_check_mark: Tom Park (Manager) :arrow_right: :hourglass_flowing_sand: Sarah Admin (HR) :arrow_right: :white_circle: Done\n_Waiting on HR review (3 days)_"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":face_with_thermometer: *Sick Leave* — Mar 3-4, 2026 (2 days)\n`REQ-0132` :white_check_mark: *Approved*"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":package: :white_check_mark: Submitted :arrow_right: :white_check_mark: Tom Park :arrow_right: :white_check_mark: Done"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":bust_in_silhouette: *Personal* — Jan 20, 2026 (1 day)\n`REQ-0085` :x: *Rejected*"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":package: :white_check_mark: Submitted :arrow_right: :x: Tom Park\n_Reason: Team deadline conflict — sprint demo on Jan 20._"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "Showing 3 most recent requests | <https://app.leaveflow.com/my-leave|View all in LeaveFlow>"
+        }
+      ]
+    }
+  ]
+}

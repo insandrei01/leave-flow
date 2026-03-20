@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeaveFlow — Dashboard Home (Experimental)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            surface: {
+              DEFAULT: '#0A0E1A',
+              raised: '#111827',
+              overlay: '#1F2937',
+            },
+            accent: {
+              indigo: '#818CF8',
+              violet: '#A78BFA',
+              emerald: '#34D399',
+              amber: '#FBBF24',
+              rose: '#FB7185',
+              cyan: '#22D3EE',
+            },
+            glass: {
+              light: 'rgba(255, 255, 255, 0.06)',
+              border: 'rgba(255, 255, 255, 0.08)',
+              hover: 'rgba(255, 255, 255, 0.1)',
+            }
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'glow': 'glow 2s ease-in-out infinite alternate',
+            'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+            'slide-right': 'slideRight 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+            'fade-in': 'fadeIn 0.4s ease-out',
+            'count-up': 'countUp 1.2s cubic-bezier(0.16, 1, 0.3, 1)',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-8px)' },
+            },
+            glow: {
+              '0%': { boxShadow: '0 0 20px rgba(129, 140, 248, 0.15)' },
+              '100%': { boxShadow: '0 0 40px rgba(129, 140, 248, 0.3)' },
+            },
+            slideUp: {
+              '0%': { transform: 'translateY(24px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+            slideRight: {
+              '0%': { transform: 'translateX(-24px)', opacity: '0' },
+              '100%': { transform: 'translateX(0)', opacity: '1' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .gradient-mesh {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(129, 140, 248, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 40% 80%, rgba(52, 211, 153, 0.06) 0%, transparent 50%);
+    }
+    .stat-number {
+      background: linear-gradient(135deg, #818CF8, #A78BFA);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .heatmap-cell {
+      transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .heatmap-cell:hover {
+      transform: scale(1.8);
+      z-index: 10;
+      border-radius: 4px;
+    }
+    .approval-ring {
+      background: conic-gradient(
+        #34D399 0deg 216deg,
+        #FBBF24 216deg 288deg,
+        #FB7185 288deg 324deg,
+        rgba(255,255,255,0.06) 324deg 360deg
+      );
+    }
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-surface text-white font-body min-h-screen gradient-mesh">
+
+  <!-- Ambient background orbs -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-accent-indigo/5 rounded-full blur-3xl animate-pulse-slow"></div>
+    <div class="absolute bottom-1/3 right-1/4 w-80 h-80 bg-accent-violet/5 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 2s"></div>
+    <div class="absolute top-2/3 left-1/2 w-64 h-64 bg-accent-emerald/3 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 4s"></div>
+  </div>
+
+  <div class="relative z-10 flex min-h-screen">
+
+    <!-- Sidebar -->
+    <nav class="w-72 border-r border-white/5 p-6 flex flex-col gap-2 animate-slide-right" aria-label="Main navigation">
+
+      <!-- Logo -->
+      <div class="flex items-center gap-3 px-3 py-4 mb-6">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-accent-indigo to-accent-violet flex items-center justify-center animate-glow">
+          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <span class="font-display font-bold text-xl tracking-tight">LeaveFlow</span>
+      </div>
+
+      <!-- Nav Items -->
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-white/8 text-white font-medium text-sm cursor-pointer transition-all duration-200" aria-current="page">
+        <svg class="w-5 h-5 text-accent-indigo" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+        Dashboard
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 text-sm cursor-pointer transition-all duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
+        Absence Calendar
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 text-sm cursor-pointer transition-all duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+        Pending Approvals
+        <span class="ml-auto bg-accent-rose/20 text-accent-rose text-xs font-mono font-medium px-2 py-0.5 rounded-full">7</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 text-sm cursor-pointer transition-all duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5" /></svg>
+        Workflow Builder
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 text-sm cursor-pointer transition-all duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" /></svg>
+        Teams & People
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 text-sm cursor-pointer transition-all duration-200">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" /></svg>
+        Reports
+      </a>
+
+      <div class="mt-auto pt-6 border-t border-white/5">
+        <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 text-sm cursor-pointer transition-all duration-200">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+          Settings
+        </a>
+
+        <!-- User profile -->
+        <div class="flex items-center gap-3 px-3 py-3 mt-2 rounded-xl glass-card cursor-pointer">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-accent-emerald to-accent-cyan flex items-center justify-center text-xs font-bold">
+            HR
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium truncate">Sarah Chen</p>
+            <p class="text-xs text-gray-500 truncate">HR Administrator</p>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-8 overflow-y-auto scrollbar-none">
+
+      <!-- Header -->
+      <header class="flex items-center justify-between mb-8 animate-fade-in">
+        <div>
+          <h1 class="font-display text-3xl font-bold tracking-tight">
+            Good morning, Sarah
+          </h1>
+          <p class="text-gray-400 mt-1 text-sm">
+            <span class="font-mono text-accent-indigo/80">Mon 16 Mar 2026</span>
+            <span class="mx-2 text-white/10">|</span>
+            Acme Corp &middot; 142 employees
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- Search -->
+          <div class="glass-card rounded-xl px-4 py-2.5 flex items-center gap-2 w-64 cursor-pointer">
+            <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+            <span class="text-sm text-gray-500">Search...</span>
+            <span class="ml-auto text-xs font-mono text-gray-600 bg-white/5 px-1.5 py-0.5 rounded">&#8984;K</span>
+          </div>
+          <!-- Notifications -->
+          <button class="glass-card rounded-xl p-2.5 relative cursor-pointer hover:bg-white/8 transition-colors duration-200" aria-label="Notifications">
+            <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-accent-rose rounded-full text-[10px] font-bold flex items-center justify-center">3</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Bento Grid -->
+      <div class="grid grid-cols-4 grid-rows-[auto] gap-4 animate-slide-up" style="grid-template-rows: repeat(3, auto);">
+
+        <!-- ============================================ -->
+        <!-- ROW 1: KPI Cards (4 x 1col) -->
+        <!-- ============================================ -->
+
+        <!-- KPI: People Out Today -->
+        <div class="glass-card rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:scale-[1.02] group" role="region" aria-label="People out today">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-accent-cyan/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-accent-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
+            </div>
+            <span class="text-xs font-mono text-accent-emerald bg-accent-emerald/10 px-2 py-0.5 rounded-full">
+              -2 vs avg
+            </span>
+          </div>
+          <p class="stat-number font-display text-4xl font-bold">8</p>
+          <p class="text-gray-400 text-sm mt-1">Out today</p>
+          <div class="mt-3 flex -space-x-2">
+            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 border-2 border-surface ring-0" title="Alex K."></div>
+            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-purple-400 to-purple-600 border-2 border-surface ring-0" title="Maria S."></div>
+            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-pink-400 to-pink-600 border-2 border-surface ring-0" title="Tom W."></div>
+            <div class="w-6 h-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 border-2 border-surface ring-0" title="Lisa R."></div>
+            <div class="w-6 h-6 rounded-full bg-white/10 border-2 border-surface flex items-center justify-center text-[9px] font-mono text-gray-400">+4</div>
+          </div>
+        </div>
+
+        <!-- KPI: Pending Approvals -->
+        <div class="glass-card rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:scale-[1.02]" role="region" aria-label="Pending approvals">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-accent-amber/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-accent-amber" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </div>
+            <span class="text-xs font-mono text-accent-rose bg-accent-rose/10 px-2 py-0.5 rounded-full">
+              3 stale
+            </span>
+          </div>
+          <p class="stat-number font-display text-4xl font-bold">7</p>
+          <p class="text-gray-400 text-sm mt-1">Pending approvals</p>
+          <!-- Mini urgency bar -->
+          <div class="mt-4 flex gap-1" role="img" aria-label="3 urgent, 2 normal, 2 new">
+            <div class="h-1.5 flex-1 rounded-full bg-accent-rose/60" title="Urgent (>48h)"></div>
+            <div class="h-1.5 flex-1 rounded-full bg-accent-rose/60" title="Urgent"></div>
+            <div class="h-1.5 flex-1 rounded-full bg-accent-rose/60" title="Urgent"></div>
+            <div class="h-1.5 flex-1 rounded-full bg-accent-amber/60" title="Normal"></div>
+            <div class="h-1.5 flex-1 rounded-full bg-accent-amber/60" title="Normal"></div>
+            <div class="h-1.5 flex-1 rounded-full bg-accent-emerald/60" title="New"></div>
+            <div class="h-1.5 flex-1 rounded-full bg-accent-emerald/60" title="New"></div>
+          </div>
+        </div>
+
+        <!-- KPI: Utilization Rate -->
+        <div class="glass-card rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:scale-[1.02]" role="region" aria-label="Leave utilization rate">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-accent-violet/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-accent-violet" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" /></svg>
+            </div>
+          </div>
+          <p class="stat-number font-display text-4xl font-bold">62<span class="text-lg">%</span></p>
+          <p class="text-gray-400 text-sm mt-1">Avg. utilization</p>
+          <p class="text-xs text-gray-500 mt-2 font-mono">Q1 2026 &middot; 12 pts above target</p>
+        </div>
+
+        <!-- KPI: Upcoming Week -->
+        <div class="glass-card rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:scale-[1.02]" role="region" aria-label="Upcoming absences this week">
+          <div class="flex items-center justify-between mb-4">
+            <div class="w-10 h-10 rounded-xl bg-accent-emerald/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-accent-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
+            </div>
+          </div>
+          <p class="stat-number font-display text-4xl font-bold">14</p>
+          <p class="text-gray-400 text-sm mt-1">Out this week</p>
+          <div class="mt-3 flex gap-1.5">
+            <div class="flex-1 text-center">
+              <div class="text-[10px] text-gray-500 font-mono">Mon</div>
+              <div class="mt-1 h-6 rounded bg-accent-indigo/20 flex items-center justify-center text-[10px] font-mono text-accent-indigo">8</div>
+            </div>
+            <div class="flex-1 text-center">
+              <div class="text-[10px] text-gray-500 font-mono">Tue</div>
+              <div class="mt-1 h-6 rounded bg-accent-indigo/30 flex items-center justify-center text-[10px] font-mono text-accent-indigo">10</div>
+            </div>
+            <div class="flex-1 text-center">
+              <div class="text-[10px] text-gray-500 font-mono">Wed</div>
+              <div class="mt-1 h-6 rounded bg-accent-indigo/40 flex items-center justify-center text-[10px] font-mono text-accent-indigo">14</div>
+            </div>
+            <div class="flex-1 text-center">
+              <div class="text-[10px] text-gray-500 font-mono">Thu</div>
+              <div class="mt-1 h-6 rounded bg-accent-indigo/25 flex items-center justify-center text-[10px] font-mono text-accent-indigo">9</div>
+            </div>
+            <div class="flex-1 text-center">
+              <div class="text-[10px] text-gray-500 font-mono">Fri</div>
+              <div class="mt-1 h-6 rounded bg-accent-indigo/15 flex items-center justify-center text-[10px] font-mono text-accent-indigo">5</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ROW 2: Absence Heatmap (2col) + Approval Ring (1col) + Activity Feed (1col) -->
+        <!-- ============================================ -->
+
+        <!-- Absence Heatmap — March 2026 -->
+        <div class="glass-card rounded-2xl p-6 col-span-2 row-span-2" role="region" aria-label="Absence heatmap for March 2026">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="font-display text-lg font-semibold">Absence Heatmap</h2>
+            <div class="flex items-center gap-2">
+              <button class="text-xs font-mono text-gray-400 hover:text-white px-2 py-1 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200" aria-label="Previous month">&larr;</button>
+              <span class="text-sm font-mono text-accent-indigo">Mar 2026</span>
+              <button class="text-xs font-mono text-gray-400 hover:text-white px-2 py-1 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200" aria-label="Next month">&rarr;</button>
+            </div>
+          </div>
+          <!-- Heatmap Grid -->
+          <div class="grid grid-cols-7 gap-1" role="grid" aria-label="March 2026 absence heatmap">
+            <!-- Day labels -->
+            <div class="text-[10px] font-mono text-gray-500 text-center py-1" role="columnheader">Mon</div>
+            <div class="text-[10px] font-mono text-gray-500 text-center py-1" role="columnheader">Tue</div>
+            <div class="text-[10px] font-mono text-gray-500 text-center py-1" role="columnheader">Wed</div>
+            <div class="text-[10px] font-mono text-gray-500 text-center py-1" role="columnheader">Thu</div>
+            <div class="text-[10px] font-mono text-gray-500 text-center py-1" role="columnheader">Fri</div>
+            <div class="text-[10px] font-mono text-gray-500 text-center py-1" role="columnheader">Sat</div>
+            <div class="text-[10px] font-mono text-gray-500 text-center py-1" role="columnheader">Sun</div>
+            <!-- Week 1 (March starts on Sunday, so first 6 cells empty-ish) -->
+            <!-- For simplicity, showing a representative heatmap -->
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/3 cursor-pointer" role="gridcell" aria-label="No data"></div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/3 cursor-pointer" role="gridcell" aria-label="No data"></div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/3 cursor-pointer" role="gridcell" aria-label="No data"></div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/3 cursor-pointer" role="gridcell" aria-label="No data"></div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/3 cursor-pointer" role="gridcell" aria-label="No data"></div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/2 cursor-default" role="gridcell" aria-label="Weekend"></div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/10 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" aria-label="Mar 1, 2 people out" title="2 out">1</div>
+            <!-- Week 2 -->
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/20 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="5 out">2</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/15 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="3 out">3</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/25 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="7 out">4</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/10 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="2 out">5</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/30 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="8 out">6</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/2 cursor-default" role="gridcell" aria-label="Weekend"></div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/2 cursor-default" role="gridcell" aria-label="Weekend"></div>
+            <!-- Week 3 -->
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/35 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="10 out">9</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/40 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="12 out">10</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-rose/40 flex items-center justify-center text-[10px] font-mono cursor-pointer ring-1 ring-accent-rose/40" role="gridcell" title="18 out - coverage warning">11</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/30 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="9 out">12</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/20 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="6 out">13</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/2 cursor-default" role="gridcell" aria-label="Weekend"></div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/2 cursor-default" role="gridcell" aria-label="Weekend"></div>
+            <!-- Week 4 (current) -->
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-emerald/30 flex items-center justify-center text-[10px] font-mono cursor-pointer ring-2 ring-accent-emerald/60" role="gridcell" title="Today - 8 out">16</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/25 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="7 out">17</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/35 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="10 out">18</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/20 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="5 out">19</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/15 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="4 out">20</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/2 cursor-default" role="gridcell" aria-label="Weekend"></div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/2 cursor-default" role="gridcell" aria-label="Weekend"></div>
+            <!-- Week 5 -->
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/15 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="3 out">23</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/10 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="2 out">24</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/10 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="2 out">25</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/20 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="6 out">26</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-amber/30 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="Holiday">27</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/2 cursor-default" role="gridcell" aria-label="Weekend"></div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-white/2 cursor-default" role="gridcell" aria-label="Weekend"></div>
+            <!-- Remaining days -->
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/10 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="1 out">30</div>
+            <div class="heatmap-cell aspect-square rounded-lg bg-accent-indigo/15 flex items-center justify-center text-[10px] font-mono cursor-pointer" role="gridcell" title="4 out">31</div>
+          </div>
+          <!-- Legend -->
+          <div class="flex items-center gap-4 mt-4 text-[10px] font-mono text-gray-500">
+            <div class="flex items-center gap-1"><div class="w-3 h-3 rounded bg-accent-indigo/10"></div> Low</div>
+            <div class="flex items-center gap-1"><div class="w-3 h-3 rounded bg-accent-indigo/30"></div> Normal</div>
+            <div class="flex items-center gap-1"><div class="w-3 h-3 rounded bg-accent-rose/40 ring-1 ring-accent-rose/40"></div> Coverage risk</div>
+            <div class="flex items-center gap-1"><div class="w-3 h-3 rounded bg-accent-emerald/30 ring-1 ring-accent-emerald/60"></div> Today</div>
+            <div class="flex items-center gap-1"><div class="w-3 h-3 rounded bg-accent-amber/30"></div> Holiday</div>
+          </div>
+        </div>
+
+        <!-- Approval Donut / Ring Chart -->
+        <div class="glass-card rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:scale-[1.02]" role="region" aria-label="Approval performance this month">
+          <h2 class="font-display text-lg font-semibold mb-4">Resolution Rate</h2>
+          <div class="relative w-32 h-32 mx-auto my-4">
+            <div class="approval-ring w-full h-full rounded-full" aria-hidden="true"></div>
+            <div class="absolute inset-2 bg-surface rounded-full flex flex-col items-center justify-center">
+              <span class="font-display text-2xl font-bold text-white">87<span class="text-sm">%</span></span>
+              <span class="text-[10px] text-gray-400 font-mono">resolved</span>
+            </div>
+          </div>
+          <div class="space-y-2 mt-4">
+            <div class="flex items-center justify-between text-xs">
+              <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-accent-emerald" aria-hidden="true"></span> Approved</span>
+              <span class="font-mono text-gray-300">24</span>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-accent-amber" aria-hidden="true"></span> Pending</span>
+              <span class="font-mono text-gray-300">7</span>
+            </div>
+            <div class="flex items-center justify-between text-xs">
+              <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-accent-rose" aria-hidden="true"></span> Rejected</span>
+              <span class="font-mono text-gray-300">3</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Activity Feed -->
+        <div class="glass-card rounded-2xl p-6 row-span-2" role="region" aria-label="Recent activity">
+          <h2 class="font-display text-lg font-semibold mb-4">Activity</h2>
+          <div class="space-y-4 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-px before:bg-white/5">
+            <!-- Item -->
+            <div class="flex gap-3 relative">
+              <div class="w-6 h-6 rounded-full bg-accent-emerald/20 flex items-center justify-center flex-shrink-0 z-10">
+                <svg class="w-3 h-3 text-accent-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+              </div>
+              <div>
+                <p class="text-sm"><span class="text-white font-medium">Tom Wilson</span> approved <span class="text-accent-indigo">Alex Kim's</span> vacation</p>
+                <p class="text-[10px] font-mono text-gray-500 mt-0.5">2 min ago</p>
+              </div>
+            </div>
+            <!-- Item -->
+            <div class="flex gap-3 relative">
+              <div class="w-6 h-6 rounded-full bg-accent-indigo/20 flex items-center justify-center flex-shrink-0 z-10">
+                <svg class="w-3 h-3 text-accent-indigo" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+              <div>
+                <p class="text-sm"><span class="text-white font-medium">Maria Santos</span> requested <span class="text-accent-violet">3 days PTO</span></p>
+                <p class="text-[10px] font-mono text-gray-500 mt-0.5">15 min ago</p>
+              </div>
+            </div>
+            <!-- Item -->
+            <div class="flex gap-3 relative">
+              <div class="w-6 h-6 rounded-full bg-accent-rose/20 flex items-center justify-center flex-shrink-0 z-10">
+                <svg class="w-3 h-3 text-accent-rose" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </div>
+              <div>
+                <p class="text-sm"><span class="text-white font-medium">James Park</span> rejected <span class="text-accent-rose">Lisa Ray's</span> request</p>
+                <p class="text-[10px] font-mono text-gray-500 mt-0.5">42 min ago</p>
+              </div>
+            </div>
+            <!-- Item -->
+            <div class="flex gap-3 relative">
+              <div class="w-6 h-6 rounded-full bg-accent-amber/20 flex items-center justify-center flex-shrink-0 z-10">
+                <svg class="w-3 h-3 text-accent-amber" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+              </div>
+              <div>
+                <p class="text-sm"><span class="text-accent-amber font-medium">Escalation:</span> Dan's request pending &gt;48h</p>
+                <p class="text-[10px] font-mono text-gray-500 mt-0.5">1h ago</p>
+              </div>
+            </div>
+            <!-- Item -->
+            <div class="flex gap-3 relative">
+              <div class="w-6 h-6 rounded-full bg-accent-cyan/20 flex items-center justify-center flex-shrink-0 z-10">
+                <svg class="w-3 h-3 text-accent-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+              </div>
+              <div>
+                <p class="text-sm"><span class="text-white font-medium">Policy updated:</span> Sick leave accrual changed</p>
+                <p class="text-[10px] font-mono text-gray-500 mt-0.5">3h ago</p>
+              </div>
+            </div>
+          </div>
+          <button class="w-full mt-4 text-xs text-accent-indigo hover:text-accent-violet font-medium py-2 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200">
+            View all activity &rarr;
+          </button>
+        </div>
+
+        <!-- ============================================ -->
+        <!-- ROW 3: Stale Requests (2col) + Team Balances (2col) -->
+        <!-- ============================================ -->
+
+        <!-- Stale / Urgent Requests -->
+        <div class="glass-card rounded-2xl p-6 col-span-2" role="region" aria-label="Requests needing attention">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-display text-lg font-semibold flex items-center gap-2">
+              Needs Attention
+              <span class="w-2 h-2 rounded-full bg-accent-rose animate-pulse" aria-hidden="true"></span>
+            </h2>
+            <button class="text-xs text-accent-indigo hover:text-accent-violet font-medium px-3 py-1.5 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200">
+              View all &rarr;
+            </button>
+          </div>
+          <div class="space-y-3">
+            <!-- Stale request row -->
+            <div class="flex items-center gap-4 p-3 rounded-xl bg-accent-rose/5 border border-accent-rose/10 hover:border-accent-rose/20 cursor-pointer transition-all duration-200">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-xs font-bold flex-shrink-0">DK</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium truncate">Dan Kim &mdash; Annual Leave</p>
+                <p class="text-xs text-gray-400 font-mono">Mar 20-24 &middot; 5 days</p>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <span class="text-xs font-mono text-accent-rose bg-accent-rose/10 px-2 py-1 rounded-lg">52h pending</span>
+              </div>
+              <button class="text-xs bg-accent-indigo/20 text-accent-indigo hover:bg-accent-indigo/30 px-3 py-1.5 rounded-lg cursor-pointer transition-colors duration-200 flex-shrink-0" aria-label="Send reminder for Dan Kim's request">
+                Remind
+              </button>
+            </div>
+            <!-- Another stale -->
+            <div class="flex items-center gap-4 p-3 rounded-xl bg-accent-rose/5 border border-accent-rose/10 hover:border-accent-rose/20 cursor-pointer transition-all duration-200">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-indigo-500 flex items-center justify-center text-xs font-bold flex-shrink-0">EN</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium truncate">Eva Nguyen &mdash; Sick Leave</p>
+                <p class="text-xs text-gray-400 font-mono">Mar 17-18 &middot; 2 days</p>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <span class="text-xs font-mono text-accent-amber bg-accent-amber/10 px-2 py-1 rounded-lg">36h pending</span>
+              </div>
+              <button class="text-xs bg-accent-amber/20 text-accent-amber hover:bg-accent-amber/30 px-3 py-1.5 rounded-lg cursor-pointer transition-colors duration-200 flex-shrink-0" aria-label="Force approve Eva Nguyen's request">
+                Force Approve
+              </button>
+            </div>
+            <!-- Normal pending -->
+            <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-white/3 cursor-pointer transition-all duration-200">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-xs font-bold flex-shrink-0">MS</div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium truncate">Maria Santos &mdash; PTO</p>
+                <p class="text-xs text-gray-400 font-mono">Mar 25-27 &middot; 3 days</p>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <span class="text-xs font-mono text-accent-emerald bg-accent-emerald/10 px-2 py-1 rounded-lg">15 min ago</span>
+              </div>
+              <div class="flex gap-1.5 flex-shrink-0">
+                <div class="w-5 h-1.5 rounded-full bg-accent-emerald/60" title="Step 1: Submitted" aria-label="Step 1 complete"></div>
+                <div class="w-5 h-1.5 rounded-full bg-accent-indigo/30 animate-pulse" title="Step 2: Manager review" aria-label="Step 2 in progress"></div>
+                <div class="w-5 h-1.5 rounded-full bg-white/10" title="Step 3: HR approval" aria-label="Step 3 pending"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Balance Snapshot -->
+        <div class="glass-card rounded-2xl p-6 col-span-2" role="region" aria-label="Team balance overview">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-display text-lg font-semibold">Team Balances</h2>
+            <button class="text-xs text-accent-indigo hover:text-accent-violet font-medium px-3 py-1.5 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200">
+              Full report &rarr;
+            </button>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <!-- Team card -->
+            <div class="rounded-xl bg-white/3 p-4 hover:bg-white/5 cursor-pointer transition-all duration-200">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-medium">Engineering</span>
+                <span class="text-xs font-mono text-gray-400">28 people</span>
+              </div>
+              <div class="flex items-end gap-1 h-12">
+                <div class="flex-1 bg-accent-indigo/20 rounded-t" style="height: 70%;" title="Vacation: 70% avg remaining" aria-label="Vacation balance 70%"></div>
+                <div class="flex-1 bg-accent-emerald/20 rounded-t" style="height: 85%;" title="Sick: 85% avg remaining" aria-label="Sick leave balance 85%"></div>
+                <div class="flex-1 bg-accent-violet/20 rounded-t" style="height: 50%;" title="Personal: 50% avg remaining" aria-label="Personal leave balance 50%"></div>
+              </div>
+              <div class="flex gap-3 mt-2 text-[10px] font-mono text-gray-500">
+                <span>Vac</span><span>Sick</span><span>Pers</span>
+              </div>
+            </div>
+            <!-- Team card -->
+            <div class="rounded-xl bg-white/3 p-4 hover:bg-white/5 cursor-pointer transition-all duration-200">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-medium">Design</span>
+                <span class="text-xs font-mono text-gray-400">12 people</span>
+              </div>
+              <div class="flex items-end gap-1 h-12">
+                <div class="flex-1 bg-accent-indigo/20 rounded-t" style="height: 45%;" title="Vacation: 45% avg remaining" aria-label="Vacation balance 45%"></div>
+                <div class="flex-1 bg-accent-emerald/20 rounded-t" style="height: 90%;" title="Sick: 90% avg remaining" aria-label="Sick leave balance 90%"></div>
+                <div class="flex-1 bg-accent-violet/20 rounded-t" style="height: 65%;" title="Personal: 65% avg remaining" aria-label="Personal leave balance 65%"></div>
+              </div>
+              <div class="flex gap-3 mt-2 text-[10px] font-mono text-gray-500">
+                <span>Vac</span><span>Sick</span><span>Pers</span>
+              </div>
+            </div>
+            <!-- Team card -->
+            <div class="rounded-xl bg-white/3 p-4 hover:bg-white/5 cursor-pointer transition-all duration-200">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-medium">Marketing</span>
+                <span class="text-xs font-mono text-gray-400">15 people</span>
+              </div>
+              <div class="flex items-end gap-1 h-12">
+                <div class="flex-1 bg-accent-indigo/20 rounded-t" style="height: 60%;" title="Vacation: 60%" aria-label="Vacation balance 60%"></div>
+                <div class="flex-1 bg-accent-emerald/20 rounded-t" style="height: 75%;" title="Sick: 75%" aria-label="Sick leave balance 75%"></div>
+                <div class="flex-1 bg-accent-violet/20 rounded-t" style="height: 80%;" title="Personal: 80%" aria-label="Personal leave balance 80%"></div>
+              </div>
+              <div class="flex gap-3 mt-2 text-[10px] font-mono text-gray-500">
+                <span>Vac</span><span>Sick</span><span>Pers</span>
+              </div>
+            </div>
+            <!-- Team card -->
+            <div class="rounded-xl bg-white/3 p-4 hover:bg-white/5 cursor-pointer transition-all duration-200">
+              <div class="flex items-center justify-between mb-3">
+                <span class="text-sm font-medium">Sales</span>
+                <span class="text-xs font-mono text-gray-400">22 people</span>
+              </div>
+              <div class="flex items-end gap-1 h-12">
+                <div class="flex-1 bg-accent-rose/20 rounded-t" style="height: 25%;" title="Vacation: 25% - low!" aria-label="Vacation balance 25% - low"></div>
+                <div class="flex-1 bg-accent-emerald/20 rounded-t" style="height: 80%;" title="Sick: 80%" aria-label="Sick leave balance 80%"></div>
+                <div class="flex-1 bg-accent-violet/20 rounded-t" style="height: 40%;" title="Personal: 40%" aria-label="Personal leave balance 40%"></div>
+              </div>
+              <div class="flex gap-3 mt-2 text-[10px] font-mono text-gray-500">
+                <span class="text-accent-rose">Vac</span><span>Sick</span><span>Pers</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- end bento grid -->
+    </main>
+  </div>
+
+</body>
+</html>

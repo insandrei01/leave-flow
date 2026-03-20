@@ -1,0 +1,73 @@
+{
+  "_description": "Slack Block Kit: Leave request confirmation sent to employee after submission",
+  "_max_blocks": 25,
+  "_notes": "This message is sent as a DM to the employee after successful submission. Shows the full approval chain the request will follow.",
+
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Leave Request Submitted",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":white_check_mark: Your leave request has been submitted and is now pending approval."
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Type:*\n:palm_tree: Vacation"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Reference:*\nREQ-2026-0147"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Dates:*\nMar 24 - Mar 28, 2026"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Working Days:*\n5 days"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Reason:*\nFamily vacation planned in advance."
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Approval Chain:*\n:arrow_right: Step 1: Tom Park (Direct Manager)\n:white_circle: Step 2: Sarah Admin (HR)"
+      }
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": ":clock3: You'll be notified when each step is completed. | <https://app.leaveflow.com/requests/REQ-2026-0147|View in LeaveFlow>"
+        }
+      ]
+    }
+  ]
+}

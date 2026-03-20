@@ -1,0 +1,65 @@
+{
+  "_description": "Slack Block Kit: Balance check response — ephemeral message shown to employee",
+  "_notes": "Response to /leave balance command. Ephemeral = only visible to the user who invoked it.",
+
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Your Leave Balance",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "Here are your current leave balances for the fiscal year 2026:"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":palm_tree: *Vacation*\n`[======----] 13 of 20 days remaining`\n7 used | 5 pending approval"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":face_with_thermometer: *Sick Leave*\n`[==--------] 8 of 10 days remaining`\n2 used"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":bust_in_silhouette: *Personal*\n`[===-------] 2 of 3 days remaining`\n1 used"
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":calendar: *Unpaid Leave*\nUnlimited | 0 used"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": ":calendar: Next public holiday: *Good Friday* (Apr 18) | <https://app.leaveflow.com/my-leave|View details>"
+        }
+      ]
+    }
+  ]
+}

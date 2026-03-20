@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================================
+   CSS Custom Properties — Design Tokens
+   Source: 02-design-experimental.md
+   ========================================================================= */
+
+@layer base {
+  :root {
+    /* Surface colors */
+    --color-surface-primary: #0a0e1a;
+    --color-surface-secondary: #111827;
+    --color-surface-overlay: #1f2937;
+    --color-surface-glass: rgba(255, 255, 255, 0.04);
+
+    /* Accent colors */
+    --color-accent-indigo: #818cf8;
+    --color-accent-violet: #a78bfa;
+    --color-accent-emerald: #34d399;
+    --color-accent-amber: #fbbf24;
+    --color-accent-rose: #fb7185;
+    --color-accent-cyan: #22d3ee;
+
+    /* Border colors */
+    --color-border-glass: rgba(255, 255, 255, 0.06);
+    --color-border-glass-hover: rgba(255, 255, 255, 0.10);
+
+    /* Text colors */
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #9ca3af;
+    --color-text-tertiary: #6b7280;
+
+    /* Effects */
+    --backdrop-blur-glass: 24px;
+    --border-radius-card: 16px;
+
+    /* Motion */
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Dark mode only — enforce dark base globally */
+  html {
+    color-scheme: dark;
+    background-color: var(--color-surface-primary);
+    color: var(--color-text-primary);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: var(--font-dm-sans), system-ui, sans-serif;
+    background-color: var(--color-surface-primary);
+    color: var(--color-text-primary);
+    /* Hide scrollbars while keeping scroll functionality */
+    scrollbar-width: none;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Accessible focus ring — visible on keyboard navigation only */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-indigo);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Reduced motion: disable all CSS animations/transitions */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* =========================================================================
+   Glassmorphic Utility Classes
+   ========================================================================= */
+
+@layer components {
+  /**
+   * Base glass card — dark glassmorphic container.
+   * Usage: <div class="glass-card">...</div>
+   */
+  .glass-card {
+    background: var(--color-surface-glass);
+    backdrop-filter: blur(var(--backdrop-blur-glass));
+    -webkit-backdrop-filter: blur(var(--backdrop-blur-glass));
+    border: 1px solid var(--color-border-glass);
+    border-radius: var(--border-radius-card);
+    transition:
+      background 300ms var(--ease-spring),
+      border-color 300ms var(--ease-spring);
+  }
+
+  .glass-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--color-border-glass-hover);
+  }
+
+  /**
+   * Glass border — standalone border utility without background.
+   * Usage: <div class="glass-border">...</div>
+   */
+  .glass-border {
+    border: 1px solid var(--color-border-glass);
+    border-radius: var(--border-radius-card);
+  }
+
+  /**
+   * Gradient mesh background — ambient depth effect.
+   * Usage: apply to the page-level background container.
+   */
+  .gradient-mesh {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gradient-mesh::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        ellipse 80% 60% at 10% 20%,
+        rgba(99, 102, 241, 0.08) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 60% 50% at 80% 70%,
+        rgba(139, 92, 246, 0.06) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 50% 40% at 50% 90%,
+        rgba(16, 185, 129, 0.05) 0%,
+        transparent 50%
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /**
+   * Shimmer loading state — moving gradient for awaiting/loading elements.
+   */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 0%,
+      rgba(255, 255, 255, 0.10) 50%,
+      rgba(255, 255, 255, 0.04) 100%
+    );
+    background-size: 200% auto;
+    animation: shimmer 3000ms ease-in-out infinite;
+  }
+
+  /**
+   * Scrollbar hide — suppress scrollbars on child scrollable containers.
+   */
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}

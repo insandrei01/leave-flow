@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeaveFlow — Workflow Builder (Experimental)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Space Grotesk', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            surface: { DEFAULT: '#0A0E1A', raised: '#111827', overlay: '#1F2937' },
+            accent: {
+              indigo: '#818CF8', violet: '#A78BFA', emerald: '#34D399',
+              amber: '#FBBF24', rose: '#FB7185', cyan: '#22D3EE',
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .gradient-mesh {
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(129, 140, 248, 0.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(167, 139, 250, 0.08) 0%, transparent 50%);
+    }
+    .node-connector {
+      position: relative;
+    }
+    .node-connector::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -32px;
+      width: 2px;
+      height: 32px;
+      background: linear-gradient(to bottom, rgba(129,140,248,0.4), rgba(129,140,248,0.1));
+    }
+    .node-connector-arrow::after {
+      content: '';
+      position: absolute;
+      left: calc(50% - 5px);
+      bottom: -38px;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid rgba(129,140,248,0.4);
+    }
+    .workflow-node {
+      transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .workflow-node:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(129, 140, 248, 0.15);
+    }
+    .dot-grid {
+      background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+  </style>
+</head>
+<body class="bg-surface text-white font-body min-h-screen gradient-mesh">
+
+  <div class="flex min-h-screen">
+    <main class="flex-1 p-8 overflow-y-auto">
+
+      <!-- Header -->
+      <header class="flex items-center justify-between mb-6">
+        <div>
+          <h1 class="font-display text-2xl font-bold tracking-tight">Workflow Builder</h1>
+          <p class="text-gray-400 text-sm mt-1">
+            Editing: <span class="text-accent-indigo font-medium">Engineering Standard Flow</span>
+            <span class="text-xs font-mono text-gray-500 ml-2">v3 &middot; Last saved 5 min ago</span>
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="glass-card rounded-xl px-4 py-2 text-xs font-medium text-accent-amber hover:bg-white/5 cursor-pointer flex items-center gap-2 transition-colors duration-200">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" /></svg>
+            Test Run
+          </button>
+          <button class="bg-accent-indigo hover:bg-accent-indigo/80 text-white rounded-xl px-5 py-2 text-sm font-medium cursor-pointer transition-colors duration-200">
+            Save &amp; Activate
+          </button>
+        </div>
+      </header>
+
+      <div class="grid grid-cols-3 gap-6">
+
+        <!-- LEFT: Form-based step editor (2 cols) -->
+        <div class="col-span-2 space-y-6">
+
+          <!-- Workflow steps as stacked form cards -->
+          <div class="space-y-8">
+
+            <!-- Step 0: Trigger -->
+            <div class="relative node-connector node-connector-arrow">
+              <div class="workflow-node glass-card rounded-2xl p-5 border-l-4 border-accent-emerald cursor-pointer">
+                <div class="flex items-center justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-accent-emerald/15 flex items-center justify-center">
+                      <svg class="w-4 h-4 text-accent-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+                    </div>
+                    <div>
+                      <span class="text-xs font-mono text-accent-emerald bg-accent-emerald/10 px-2 py-0.5 rounded-full">TRIGGER</span>
+                      <h3 class="text-sm font-semibold mt-1">Leave Request Submitted</h3>
+                    </div>
+                  </div>
+                </div>
+                <p class="text-xs text-gray-400">Workflow starts when an employee submits a leave request via bot or web.</p>
+              </div>
+            </div>
+
+            <!-- Step 1: Manager Approval -->
+            <div class="relative node-connector node-connector-arrow">
+              <div class="workflow-node glass-card rounded-2xl p-5 border-l-4 border-accent-indigo">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-accent-indigo/15 flex items-center justify-center">
+                      <span class="text-xs font-mono font-bold text-accent-indigo">1</span>
+                    </div>
+                    <div>
+                      <span class="text-xs font-mono text-accent-indigo bg-accent-indigo/10 px-2 py-0.5 rounded-full">APPROVAL STEP</span>
+                      <h3 class="text-sm font-semibold mt-1">Direct Manager</h3>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button class="text-gray-500 hover:text-white p-1 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200" aria-label="Move step up">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" /></svg>
+                    </button>
+                    <button class="text-gray-500 hover:text-white p-1 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200" aria-label="Move step down">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                    </button>
+                    <button class="text-gray-500 hover:text-accent-rose p-1 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200" aria-label="Delete step">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Step configuration form -->
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-medium text-gray-400" for="step1-approver">Approver Type</label>
+                    <select id="step1-approver" class="w-full bg-white/5 border border-white/8 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-accent-indigo/50 focus:border-transparent cursor-pointer">
+                      <option selected>Direct Manager (role-based)</option>
+                      <option>Specific Person</option>
+                      <option>Any of Group</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-medium text-gray-400" for="step1-timeout">Timeout Action</label>
+                    <select id="step1-timeout" class="w-full bg-white/5 border border-white/8 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-accent-indigo/50 focus:border-transparent cursor-pointer">
+                      <option>Send reminder (max 3)</option>
+                      <option selected>Escalate to next step</option>
+                      <option>Auto-approve</option>
+                      <option>Notify HR</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-medium text-gray-400" for="step1-timeout-hours">Timeout (hours)</label>
+                    <input id="step1-timeout-hours" type="number" value="24" class="w-full bg-white/5 border border-white/8 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-accent-indigo/50 focus:border-transparent font-mono" />
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-medium text-gray-400" for="step1-delegation">Allow Delegation</label>
+                    <div class="flex items-center gap-3 mt-1">
+                      <button id="step1-delegation" role="switch" aria-checked="true" class="relative w-10 h-6 bg-accent-indigo rounded-full cursor-pointer transition-colors duration-200" aria-label="Toggle delegation">
+                        <span class="absolute left-[calc(100%-22px)] top-0.5 w-5 h-5 bg-white rounded-full transition-transform duration-200 shadow"></span>
+                      </button>
+                      <span class="text-xs text-gray-400">Enabled</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: HR Review -->
+            <div class="relative node-connector node-connector-arrow">
+              <div class="workflow-node glass-card rounded-2xl p-5 border-l-4 border-accent-violet">
+                <div class="flex items-center justify-between mb-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-accent-violet/15 flex items-center justify-center">
+                      <span class="text-xs font-mono font-bold text-accent-violet">2</span>
+                    </div>
+                    <div>
+                      <span class="text-xs font-mono text-accent-violet bg-accent-violet/10 px-2 py-0.5 rounded-full">APPROVAL STEP</span>
+                      <h3 class="text-sm font-semibold mt-1">HR Administrator</h3>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <button class="text-gray-500 hover:text-white p-1 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200" aria-label="Move step up">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" /></svg>
+                    </button>
+                    <button class="text-gray-500 hover:text-white p-1 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200" aria-label="Move step down">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+                    </button>
+                    <button class="text-gray-500 hover:text-accent-rose p-1 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200" aria-label="Delete step">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-medium text-gray-400" for="step2-approver">Approver</label>
+                    <select id="step2-approver" class="w-full bg-white/5 border border-white/8 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-accent-violet/50 focus:border-transparent cursor-pointer">
+                      <option>Direct Manager (role-based)</option>
+                      <option selected>Specific Person</option>
+                      <option>Any of Group</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-medium text-gray-400" for="step2-person">Person</label>
+                    <input id="step2-person" type="text" value="Sarah Chen" class="w-full bg-white/5 border border-white/8 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-accent-violet/50 focus:border-transparent" />
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-medium text-gray-400" for="step2-timeout-action">Timeout</label>
+                    <select id="step2-timeout-action" class="w-full bg-white/5 border border-white/8 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-accent-violet/50 focus:border-transparent cursor-pointer">
+                      <option selected>Send reminder (max 3)</option>
+                      <option>Escalate to next step</option>
+                      <option>Auto-approve</option>
+                      <option>Notify HR</option>
+                    </select>
+                  </div>
+                  <div class="space-y-1.5">
+                    <label class="text-xs font-medium text-gray-400" for="step2-timeout-h">Hours</label>
+                    <input id="step2-timeout-h" type="number" value="48" class="w-full bg-white/5 border border-white/8 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-accent-violet/50 focus:border-transparent font-mono" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- End node -->
+            <div>
+              <div class="workflow-node glass-card rounded-2xl p-5 border-l-4 border-accent-emerald cursor-pointer">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-lg bg-accent-emerald/15 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-accent-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  </div>
+                  <div>
+                    <span class="text-xs font-mono text-accent-emerald bg-accent-emerald/10 px-2 py-0.5 rounded-full">COMPLETE</span>
+                    <h3 class="text-sm font-semibold mt-1">Request Resolved</h3>
+                  </div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Employee notified, calendar synced, balance updated.</p>
+              </div>
+            </div>
+
+            <!-- Add Step Button -->
+            <div class="flex justify-center">
+              <button class="glass-card rounded-xl px-6 py-3 text-sm font-medium text-accent-indigo hover:text-white hover:bg-accent-indigo/20 cursor-pointer flex items-center gap-2 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                Add Approval Step
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT: Live visual preview (1 col) -->
+        <div class="col-span-1">
+          <div class="glass-card rounded-2xl p-5 sticky top-8">
+            <h3 class="font-display text-sm font-semibold mb-4 flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-accent-emerald animate-pulse" aria-hidden="true"></span>
+              Live Preview
+            </h3>
+            <!-- Mini node-based visual -->
+            <div class="dot-grid rounded-xl p-6 bg-white/2 min-h-[400px] flex flex-col items-center gap-0">
+
+              <!-- Start node -->
+              <div class="w-12 h-12 rounded-full bg-accent-emerald/20 border border-accent-emerald/30 flex items-center justify-center">
+                <svg class="w-5 h-5 text-accent-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>
+              </div>
+              <div class="w-px h-8 bg-gradient-to-b from-accent-emerald/30 to-accent-indigo/30"></div>
+
+              <!-- Step 1 node -->
+              <div class="w-32 glass-card rounded-xl p-3 text-center border-l-2 border-accent-indigo">
+                <div class="text-[10px] font-mono text-accent-indigo">Step 1</div>
+                <div class="text-xs font-medium mt-0.5">Manager</div>
+                <div class="text-[9px] text-gray-500 font-mono mt-1">24h timeout</div>
+              </div>
+              <div class="w-px h-8 bg-gradient-to-b from-accent-indigo/30 to-accent-violet/30"></div>
+
+              <!-- Step 2 node -->
+              <div class="w-32 glass-card rounded-xl p-3 text-center border-l-2 border-accent-violet">
+                <div class="text-[10px] font-mono text-accent-violet">Step 2</div>
+                <div class="text-xs font-medium mt-0.5">HR Admin</div>
+                <div class="text-[9px] text-gray-500 font-mono mt-1">48h timeout</div>
+              </div>
+              <div class="w-px h-8 bg-gradient-to-b from-accent-violet/30 to-accent-emerald/30"></div>
+
+              <!-- End node -->
+              <div class="w-12 h-12 rounded-full bg-accent-emerald/20 border border-accent-emerald/30 flex items-center justify-center">
+                <svg class="w-5 h-5 text-accent-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+
+              <!-- Timing info -->
+              <div class="mt-6 w-full glass-card rounded-xl p-3">
+                <div class="text-[10px] font-mono text-gray-400 mb-2">Estimated Resolution</div>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm font-display font-semibold text-accent-indigo">~3 days</span>
+                  <span class="text-[10px] font-mono text-gray-500">best case: 1h</span>
+                </div>
+                <div class="mt-2 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                  <div class="h-full rounded-full bg-gradient-to-r from-accent-emerald via-accent-indigo to-accent-violet" style="width: 72%"></div>
+                </div>
+                <div class="flex justify-between text-[9px] font-mono text-gray-500 mt-1">
+                  <span>Submit</span>
+                  <span>Resolve</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Template selector -->
+            <div class="mt-4">
+              <h4 class="text-xs font-medium text-gray-400 mb-2">Quick Templates</h4>
+              <div class="grid grid-cols-2 gap-2">
+                <button class="glass-card rounded-lg p-2 text-left hover:bg-white/8 cursor-pointer transition-colors duration-200">
+                  <div class="text-[10px] font-mono text-accent-emerald">Simple</div>
+                  <div class="text-[9px] text-gray-500">1 step</div>
+                </button>
+                <button class="glass-card rounded-lg p-2 text-left bg-accent-indigo/10 border-accent-indigo/20 cursor-pointer">
+                  <div class="text-[10px] font-mono text-accent-indigo">Standard</div>
+                  <div class="text-[9px] text-gray-500">2 steps</div>
+                </button>
+                <button class="glass-card rounded-lg p-2 text-left hover:bg-white/8 cursor-pointer transition-colors duration-200">
+                  <div class="text-[10px] font-mono text-accent-violet">Enterprise</div>
+                  <div class="text-[9px] text-gray-500">3+ steps</div>
+                </button>
+                <button class="glass-card rounded-lg p-2 text-left hover:bg-white/8 cursor-pointer transition-colors duration-200">
+                  <div class="text-[10px] font-mono text-accent-amber">Custom</div>
+                  <div class="text-[9px] text-gray-500">Blank</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Assigned teams -->
+            <div class="mt-4 pt-4 border-t border-white/5">
+              <h4 class="text-xs font-medium text-gray-400 mb-2">Assigned Teams</h4>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="text-[10px] font-mono bg-accent-indigo/10 text-accent-indigo px-2 py-1 rounded-lg">Engineering</span>
+                <span class="text-[10px] font-mono bg-accent-violet/10 text-accent-violet px-2 py-1 rounded-lg">QA</span>
+                <button class="text-[10px] font-mono text-gray-500 hover:text-white px-2 py-1 rounded-lg hover:bg-white/5 cursor-pointer transition-colors duration-200">+ Add team</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>

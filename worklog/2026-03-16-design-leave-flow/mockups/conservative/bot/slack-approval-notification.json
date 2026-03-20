@@ -1,0 +1,128 @@
+{
+  "_description": "Slack Block Kit: Approval notification sent to approver with Approve/Reject buttons",
+  "_max_blocks": 25,
+  "_notes": "Sent as DM to the current approver. Buttons trigger interactive message callbacks. After action, buttons are replaced with result text.",
+
+  "blocks": [
+    {
+      "type": "header",
+      "text": {
+        "type": "plain_text",
+        "text": "Leave Request Needs Your Approval",
+        "emoji": true
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":raised_hand: *John Doe* from *Engineering* has requested leave and needs your approval."
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "section",
+      "fields": [
+        {
+          "type": "mrkdwn",
+          "text": "*Type:*\n:palm_tree: Vacation"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Days:*\n5 working days"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Dates:*\nMar 24 - Mar 28, 2026"
+        },
+        {
+          "type": "mrkdwn",
+          "text": "*Step:*\n1 of 2"
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Reason:*\nFamily vacation planned in advance. All sprint work will be handed off to Maya before departure."
+      }
+    },
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Team Availability (Mar 24-28):*\n:large_green_circle: Lisa Wong — Available\n:large_green_circle: Maya Johnson — Available\n:large_green_circle: Alex Chen — Available\n_Coverage: 83% (5/6 available)_"
+      }
+    },
+    {
+      "type": "divider"
+    },
+    {
+      "type": "actions",
+      "elements": [
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "Approve",
+            "emoji": true
+          },
+          "style": "primary",
+          "action_id": "approve_leave",
+          "value": "REQ-2026-0147",
+          "confirm": {
+            "title": {
+              "type": "plain_text",
+              "text": "Approve Leave Request?"
+            },
+            "text": {
+              "type": "mrkdwn",
+              "text": "Approve *5 days of vacation* for *John Doe* (Mar 24-28)?"
+            },
+            "confirm": {
+              "type": "plain_text",
+              "text": "Approve"
+            },
+            "deny": {
+              "type": "plain_text",
+              "text": "Cancel"
+            }
+          }
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "Reject",
+            "emoji": true
+          },
+          "style": "danger",
+          "action_id": "reject_leave",
+          "value": "REQ-2026-0147"
+        },
+        {
+          "type": "button",
+          "text": {
+            "type": "plain_text",
+            "text": "View in LeaveFlow",
+            "emoji": true
+          },
+          "action_id": "view_in_app",
+          "url": "https://app.leaveflow.com/requests/REQ-2026-0147"
+        }
+      ]
+    },
+    {
+      "type": "context",
+      "elements": [
+        {
+          "type": "mrkdwn",
+          "text": "Submitted 2 hours ago | Auto-escalation in 46 hours"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "@leaveflow/shared-types",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo 'No runtime tests for pure types'",
+    "lint": "echo 'lint not configured'",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

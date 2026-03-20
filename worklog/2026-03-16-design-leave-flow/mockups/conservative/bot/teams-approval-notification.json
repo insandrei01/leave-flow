@@ -1,0 +1,200 @@
+{
+  "_description": "Microsoft Teams Adaptive Card: Approval notification with Approve/Reject actions",
+  "_max_payload": "28KB",
+  "_notes": "Uses Action.Execute for approve/reject. After action, card is refreshed with result state.",
+
+  "type": "AdaptiveCard",
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Leave Request Needs Your Approval",
+      "weight": "Bolder",
+      "size": "Large",
+      "wrap": true
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "auto",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "JD",
+              "weight": "Bolder",
+              "color": "Accent",
+              "horizontalAlignment": "Center",
+              "size": "Medium"
+            }
+          ],
+          "style": "emphasis",
+          "minHeight": "40px",
+          "verticalContentAlignment": "Center"
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "**John Doe**",
+              "wrap": true
+            },
+            {
+              "type": "TextBlock",
+              "text": "Engineering / Backend Team",
+              "size": "Small",
+              "isSubtle": true,
+              "spacing": "None",
+              "wrap": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "separator": true,
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "TYPE",
+              "weight": "Bolder",
+              "size": "Small",
+              "color": "Accent",
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "Vacation"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "DAYS",
+              "weight": "Bolder",
+              "size": "Small",
+              "color": "Accent",
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "5 working days"
+            }
+          ]
+        },
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "STEP",
+              "weight": "Bolder",
+              "size": "Small",
+              "color": "Accent",
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "1 of 2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        {
+          "type": "Column",
+          "width": "stretch",
+          "items": [
+            {
+              "type": "TextBlock",
+              "text": "DATES",
+              "weight": "Bolder",
+              "size": "Small",
+              "color": "Accent",
+              "spacing": "None"
+            },
+            {
+              "type": "TextBlock",
+              "text": "Mar 24 - Mar 28, 2026",
+              "wrap": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "TextBlock",
+      "text": "**Reason:** Family vacation planned in advance. All sprint work will be handed off to Maya before departure.",
+      "wrap": true,
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "TextBlock",
+      "text": "**Team Availability (Mar 24-28):**",
+      "spacing": "Medium",
+      "wrap": true
+    },
+    {
+      "type": "FactSet",
+      "facts": [
+        { "title": "Lisa Wong", "value": "Available" },
+        { "title": "Maya Johnson", "value": "Available" },
+        { "title": "Alex Chen", "value": "Available" },
+        { "title": "Coverage", "value": "83% (5/6 available)" }
+      ]
+    },
+    {
+      "type": "TextBlock",
+      "text": "Submitted 2 hours ago | Auto-escalation in 46 hours",
+      "size": "Small",
+      "isSubtle": true,
+      "separator": true,
+      "wrap": true
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Execute",
+      "title": "Approve",
+      "verb": "approve_leave",
+      "data": {
+        "requestId": "REQ-2026-0147",
+        "action": "approve"
+      },
+      "style": "positive"
+    },
+    {
+      "type": "Action.Execute",
+      "title": "Reject",
+      "verb": "reject_leave",
+      "data": {
+        "requestId": "REQ-2026-0147",
+        "action": "reject"
+      },
+      "style": "destructive"
+    },
+    {
+      "type": "Action.OpenUrl",
+      "title": "View in LeaveFlow",
+      "url": "https://app.leaveflow.com/requests/REQ-2026-0147"
+    }
+  ]
+}
