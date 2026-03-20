@@ -20,13 +20,11 @@ The review stage found 16 critical issues (plaintext OAuth tokens, missing CSRF,
 
 ## See the design variants
 
-Three UI directions were generated. Browse them live:
+Three UI directions were generated. [**Browse all three live →**](https://insandrei01.github.io/leave-flow/mockups/index.html)
 
-- [**Conservative**](mockups/conservative/dashboard-home.html) — Clean traditional SaaS
-- [**Creative**](mockups/creative/dashboard-home.html) — Glassmorphism + SaaS hybrid
-- [**Experimental**](mockups/experimental/dashboard-home.html) ← selected — Dark glassmorphic, bento grids
-
-Open [`mockups/index.html`](mockups/index.html) to compare all three side by side.
+- [Conservative](https://insandrei01.github.io/leave-flow/mockups/conservative/dashboard-home.html) — Clean traditional SaaS
+- [Creative](https://insandrei01.github.io/leave-flow/mockups/creative/dashboard-home.html) — Glassmorphism + SaaS hybrid
+- [Experimental](https://insandrei01.github.io/leave-flow/mockups/experimental/dashboard-home.html) ← selected — Dark glassmorphic, bento grids
 
 ## What's in the repo
 
